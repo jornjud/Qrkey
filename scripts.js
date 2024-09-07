@@ -1,14 +1,12 @@
-// ตัวอักษรที่อนุญาตในการเข้ารหัส (รวมภาษาไทย, อังกฤษ, ตัวเลข, และอักขระพิเศษบางตัว)
+// ตัวอักษรที่อนุญาตในการเข้ารหัส
 const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ' +
                       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' +
                       '!@#$%^&*()_+-=[]{}|;:,./<>?';
 
-// ฟังก์ชันสร้าง seed สั้น
 function generateShortSeed() {
     return Math.floor(Math.random() * 1679616).toString(36).padStart(4, '0');
 }
 
-// ฟังก์ชันสร้าง Pseudo-random number generator (PRNG)
 function createPRNG(seed, keyword) {
     const combined = seed + keyword;
     const hash = CryptoJS.SHA256(combined).toString(CryptoJS.enc.Hex);
@@ -19,7 +17,6 @@ function createPRNG(seed, keyword) {
     };
 }
 
-// ปรับฟังก์ชันเข้ารหัส ThaiEng แบบปรับปรุง
 function encodeThaiEng(text, seed, keyword) {
     const prng = createPRNG(seed, keyword);
     let result = '';
@@ -37,36 +34,32 @@ function encodeThaiEng(text, seed, keyword) {
     return result;
 }
 
-// ฟังก์ชันเข้ารหัสหลัก
 function encrypt(text, keyword) {
     const seed = generateShortSeed();
     return seed + encodeThaiEng(text, seed, keyword);
 }
 
-// ฟังก์ชันสร้าง QR code
 function generateQRCode(text) {
     const encodedText = encodeURIComponent(text);
     const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}`;
     const qrcode = document.getElementById('qrcode');
     qrcode.innerHTML = "";  // ล้าง QR Code เก่า
-
-    // ปรับการตั้งค่า QR Code ให้มีพื้นที่รอบๆ มากขึ้นและมีพื้นหลังที่ชัดเจน
     new QRCode(qrcode, {
         text: qrCodeText,
-        width: 256,  // ขนาด QR Code
+        width: 256,
         height: 256,
-        colorDark: "#000000",  // สีของ QR Code
-        colorLight: "#ffffff",  // พื้นหลังของ QR Code
-        correctLevel: QRCode.CorrectLevel.H,  // ระดับการแก้ไขข้อผิดพลาดสูงสุด
-        quietZone: 20,  // พื้นที่ว่างรอบๆ QR Code เพิ่มขึ้น
-        quietZoneColor: "#ffffff"  // สีของพื้นที่ว่างรอบ QR Code
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H,
+        quietZone: 15,
+        quietZoneColor: "#ffffff"
     });
 
-    // เพิ่มลิงก์ที่สร้างขึ้นเพื่อการแสดง
+    // เพิ่มการแสดงลิงก์
     const linkElement = document.getElementById('qrcode-link');
     linkElement.innerHTML = `<a href="${qrCodeText}" target="_blank">${qrCodeText}</a>`;
 }
-// ฟังก์ชันอัพเดตการแปลและสร้าง QR code อัตโนมัติ
+
 function updateTranslation() {
     const sourceText = document.getElementById("sourceText").value;
     const keyword = document.getElementById("keyword").value;
@@ -75,7 +68,6 @@ function updateTranslation() {
     generateQRCode(targetText);
 }
 
-// ฟังก์ชันคัดลอกข้อความไปยัง clipboard
 function copyToClipboard(elementId) {
     const element = document.getElementById(elementId);
     element.select();
@@ -83,39 +75,61 @@ function copyToClipboard(elementId) {
     alert('คัดลอกข้อความแล้ว!');
 }
 
-// ฟังก์ชันบันทึก QR Code
-function saveQRCode() {
-    const canvas = document.querySelector("#qrcode canvas");
-    if (canvas) {
-        const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        const link = document.createElement('a');
-        link.download = 'qrcode.png';
-        link.href = image;
-        link.click();
-    } else {
-        alert('กรุณาสร้าง QR Code ก่อนบันทึก');
-    }
+function createQRCodeWithFrame() {
+    return new Promise((resolve) => {
+        const qrCanvas = document.querySelector("#qrcode canvas");
+        const frameCanvas = document.createElement('canvas');
+        const ctx = frameCanvas.getContext('2d');
+
+        // กำหนดขนาดของ canvas ใหม่ (เพิ่มขอบ)
+        const padding = 40;
+        frameCanvas.width = qrCanvas.width + (padding * 2);
+        frameCanvas.height = qrCanvas.height + (padding * 2);
+
+        // วาดพื้นหลังสีขาว
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, frameCanvas.width, frameCanvas.height);
+
+        // วาดกรอบ
+        ctx.strokeStyle = '#4CAF50';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(10, 10, frameCanvas.width - 20, frameCanvas.height - 20);
+
+        // วาด QR code ลงบน canvas ใหม่
+        ctx.drawImage(qrCanvas, padding, padding);
+
+        // เพิ่มข้อความ
+        ctx.font = '14px Arial';
+        ctx.fillStyle = 'black';
+        ctx.textAlign = 'center';
+        ctx.fillText('สแกนเพื่อถอดรหัส SQRC', frameCanvas.width / 2, frameCanvas.height - 15);
+
+        frameCanvas.toBlob((blob) => {
+            resolve(blob);
+        });
+    });
 }
 
-// ฟังก์ชันแชร์ QR Code
-function shareQRCode() {
-    const canvas = document.querySelector("#qrcode canvas");
-    if (canvas) {
-        canvas.toBlob(function(blob) {
-            const file = new File([blob], "qrcode.png", { type: "image/png" });
-            if (navigator.share) {
-                navigator.share({
-                    title: 'SQRC QR Code',
-                    text: 'นี่คือ QR Code สำหรับข้อความที่เข้ารหัสของฉัน',
-                    files: [file]
-                }).then(() => console.log('Share was successful.'))
-                .catch((error) => console.log('Sharing failed', error));
-            } else {
-                alert('ขออภัย, เบราว์เซอร์ของคุณไม่รองรับการแชร์');
-            }
-        });
+async function saveQRCode() {
+    const blob = await createQRCodeWithFrame();
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'qrcode_with_frame.png';
+    link.click();
+}
+
+async function shareQRCode() {
+    const blob = await createQRCodeWithFrame();
+    const file = new File([blob], "qrcode_with_frame.png", { type: "image/png" });
+    if (navigator.share) {
+        navigator.share({
+            title: 'SQRC QR Code',
+            text: 'นี่คือ QR Code สำหรับข้อความที่เข้ารหัสของฉัน',
+            files: [file]
+        }).then(() => console.log('Share was successful.'))
+        .catch((error) => console.log('Sharing failed', error));
     } else {
-        alert('กรุณาสร้าง QR Code ก่อนแชร์');
+        alert('ขออภัย, เบราว์เซอร์ของคุณไม่รองรับการแชร์');
     }
 }
 
