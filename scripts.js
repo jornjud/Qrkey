@@ -47,12 +47,15 @@ function encrypt(text, keyword) {
 function generateQRCode(text) {
     const encodedText = encodeURIComponent(text);
     const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}`;
-    const canvas = document.getElementById('qrcode');
-    canvas.innerHTML = "";  // ล้าง QR Code เก่า
-    new QRCode(canvas, {
+    const qrcode = document.getElementById('qrcode');
+    qrcode.innerHTML = "";  // ล้าง QR Code เก่า
+    new QRCode(qrcode, {
         text: qrCodeText,
-        width: 128,
-        height: 128
+        width: 200,
+        height: 200,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
     });
 }
 
