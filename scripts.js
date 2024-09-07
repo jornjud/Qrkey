@@ -46,7 +46,7 @@ function encrypt(text, keyword) {
 // ฟังก์ชันสร้าง QR code
 function generateQRCode(text) {
     const encodedText = encodeURIComponent(text);
-    const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}`;
+    const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}`;  // แก้ URL ให้ตรงกับเส้นทางของหน้า decoder
     const canvas = document.getElementById('qrcode');
     canvas.innerHTML = "";  // ล้าง QR Code เก่า
     new QRCode(canvas, {
@@ -55,6 +55,7 @@ function generateQRCode(text) {
         height: 128
     });
 }
+
 
 // ฟังก์ชันอัพเดตการแปลและสร้าง QR code อัตโนมัติ
 function updateTranslation() {
