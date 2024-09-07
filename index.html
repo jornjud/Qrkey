@@ -4,91 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text to SQRC Converter</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        body {
-            font-family: 'Sarabun', Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-        }
-        h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        textarea, input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .qrcode-outer-container {
-            display: inline-block;
-            background: white;
-            padding: 16px;
-            border: 2px solid #000;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 20px 0;
-        }
-        .qrcode-inner-container {
-            background: white;
-            padding: 8px;
-            border: 2px solid #4CAF50;
-            border-radius: 8px;
-        }
-        #qrcode img {
-            display: block;
-            width: 300px;
-            height: 300px;
-        }
-        .qrcode-link {
-            margin-top: 10px;
-            word-break: break-all;
-            font-size: 14px;
-            color: #4CAF50;
-        }
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-        .button-group button {
-            flex: 1;
-            margin: 0 5px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
