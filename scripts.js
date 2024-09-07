@@ -51,18 +51,19 @@ function generateQRCode(text) {
     qrcode.innerHTML = "";  // ล้าง QR Code เก่า
     new QRCode(qrcode, {
         text: qrCodeText,
-        width: 200,
-        height: 200,
+        width: 256,
+        height: 256,
         colorDark : "#000000",
         colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
+        correctLevel : QRCode.CorrectLevel.H,
+        quietZone: 15,
+        quietZoneColor: "#ffffff"
     });
 
     // เพิ่มการแสดงลิงก์
     const linkElement = document.getElementById('qrcode-link');
     linkElement.innerHTML = `<a href="${qrCodeText}" target="_blank">${qrCodeText}</a>`;
 }
-
 // ฟังก์ชันอัพเดตการแปลและสร้าง QR code อัตโนมัติ
 function updateTranslation() {
     const sourceText = document.getElementById("sourceText").value;
