@@ -46,12 +46,12 @@ function generateQRCode(text) {
     qrcode.innerHTML = "";  // ล้าง QR Code เก่า
     new QRCode(qrcode, {
         text: qrCodeText,
-        width: 256,
-        height: 256,
+        width: 300,
+        height: 300,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H,
-        quietZone: 15,
+        quietZone: 10,
         quietZoneColor: "#ffffff"
     });
 
@@ -83,26 +83,25 @@ function createQRCodeWithFrame() {
 
         // กำหนดขนาดของ canvas ใหม่ (เพิ่มขอบ)
         const padding = 40;
-        frameCanvas.width = qrCanvas.width + (padding * 2);
-        frameCanvas.height = qrCanvas.height + (padding * 2);
+        const borderWidth = 4;
+        frameCanvas.width = qrCanvas.width + (padding * 2) + (borderWidth * 4);
+        frameCanvas.height = frameCanvas.width;
 
         // วาดพื้นหลังสีขาว
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, frameCanvas.width, frameCanvas.height);
 
-        // วาดกรอบ
+        // วาดกรอบนอกสีดำ
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = borderWidth;
+        ctx.strokeRect(borderWidth / 2, borderWidth / 2, frameCanvas.width - borderWidth, frameCanvas.height - borderWidth);
+
+        // วาดกรอบในสีเขียว
         ctx.strokeStyle = '#4CAF50';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(10, 10, frameCanvas.width - 20, frameCanvas.height - 20);
+        ctx.strokeRect(borderWidth * 2, borderWidth * 2, frameCanvas.width - borderWidth * 4, frameCanvas.height - borderWidth * 4);
 
         // วาด QR code ลงบน canvas ใหม่
-        ctx.drawImage(qrCanvas, padding, padding);
-
-        // เพิ่มข้อความ
-        ctx.font = '14px Arial';
-        ctx.fillStyle = 'black';
-        ctx.textAlign = 'center';
-        ctx.fillText('สแกนเพื่อถอดรหัส SQRC', frameCanvas.width / 2, frameCanvas.height - 15);
+        ctx.drawImage(qrCanvas, padding + borderWidth * 2, padding + borderWidth * 2);
 
         frameCanvas.toBlob((blob) => {
             resolve(blob);
