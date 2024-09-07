@@ -82,9 +82,11 @@ canvas {
     border-radius: 10px;
 }
 
-#qrcode {
-    padding: 10px;
-    background-color: white;
+##qrcode {
+    padding: 20px;  /* เพิ่ม padding รอบ QR Code */
+    background-color: #ffffff;  /* พื้นหลังสีขาว */
+    border: 2px solid #000000;  /* เพิ่มขอบดำรอบ QR Code */
+    display: inline-block;
 }
 
 #qrcode img {
@@ -129,3 +131,4 @@ canvas {
     font-size: 14px;
     color: #4CAF50;
 }
+
