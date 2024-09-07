@@ -93,3 +93,10 @@ canvas {
     width: 200px;
     height: 200px;
 }
+
+.qrcode-link {
+    margin-top: 10px;
+    word-break: break-all;
+    font-size: 14px;
+    color: #4CAF50;
+}
