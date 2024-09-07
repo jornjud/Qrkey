@@ -70,3 +70,26 @@ canvas {
     margin-left: auto;
     margin-right: auto;
 }
+
+.qrcode-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: white;
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+}
+
+#qrcode {
+    padding: 10px;
+    background-color: white;
+}
+
+#qrcode img {
+    display: block;
+    margin: 0 auto;
+    width: 200px;
+    height: 200px;
+}
