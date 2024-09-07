@@ -1,106 +1,53 @@
-/* ตั้งค่าสไตล์พื้นฐานสำหรับหน้าเว็บ */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Sarabun', Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
-/* การจัดการกล่องเนื้อหาหลัก */
 .container {
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
+    max-width: 500px;
+    width: 90%;
     text-align: center;
 }
 
-/* สไตล์สำหรับหัวข้อ */
 h1 {
-    font-size: 24px;
+    font-size: 28px;
+    color: #333;
     margin-bottom: 20px;
 }
 
-/* สไตล์สำหรับ input และ textarea */
 textarea, input[type="text"] {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
+    padding: 12px;
+    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
-/* ปุ่มสไตล์ */
 button {
-    background-color: #008CBA;
+    background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s;
 }
 
-/* การเปลี่ยนสีปุ่มเมื่อ hover */
 button:hover {
-    background-color: #005f73;
-}
-
-/* การจัดการส่วนผลลัพธ์ที่เข้ารหัส */
-.output {
-    margin-top: 20px;
-}
-
-textarea[readonly] {
-    background-color: #f9f9f9;
-    color: #555;
-}
-
-/* การจัดการ QR Code */
-canvas {
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.qrcode-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-    padding: 10px;
-    background-color: white;
-    border: 2px solid #4CAF50;
-    border-radius: 10px;
-}
-
-##qrcode {
-    padding: 20px;  /* เพิ่ม padding รอบ QR Code */
-    background-color: #ffffff;  /* พื้นหลังสีขาว */
-    border: 2px solid #000000;  /* เพิ่มขอบดำรอบ QR Code */
-    display: inline-block;
-}
-
-#qrcode img {
-    display: block;
-    margin: 0 auto;
-    width: 200px;
-    height: 200px;
-}
-
-.qrcode-link {
-    margin-top: 10px;
-    word-break: break-all;
-    font-size: 14px;
-    color: #4CAF50;
+    background-color: #45a049;
 }
 
 .qrcode-outer-container {
@@ -110,6 +57,9 @@ canvas {
     border: 2px solid #000;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .qrcode-inner-container {
@@ -121,8 +71,10 @@ canvas {
 
 #qrcode img {
     display: block;
-    width: 256px;
-    height: 256px;
+    width: 400px;
+    height: 400px;
+    max-width: 100%;
+    height: auto;
 }
 
 .qrcode-link {
@@ -132,3 +84,13 @@ canvas {
     color: #4CAF50;
 }
 
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.button-group button {
+    flex: 1;
+    margin: 0 5px;
+}
