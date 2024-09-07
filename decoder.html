@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQRC Decoder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: 'Sarabun', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SQRC Decoder</h1>
+        <input type="text" id="encodedText" placeholder="ใส่ข้อความที่เข้ารหัส">
+        <input type="text" id="keyword" placeholder="ใส่คีย์เวิร์ด">
+        <button onclick="decodeText()">ถอดรหัส</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // ตัวอักษรที่อนุญาตในการเข้ารหัส
+        const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ' +
+                              'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' +
+                              '!@#$%^&*()_+-=[]{}|;:,./<>?';
+
+        function createPRNG(seed, keyword) {
+            const combined = seed + keyword;
+            const hash = CryptoJS.SHA256(combined).toString(CryptoJS.enc.Hex);
+            let state = parseInt(hash.substring(0, 8), 16);
+            return () => {
+                state = (state * 1103515245 + 12345) & 0x7fffffff;
+                return state / 0x80000000;
+            };
+        }
+
+        function decodeThaiEng(text, seed, keyword) {
+            const prng = createPRNG(seed, keyword);
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const index = ALLOWED_CHARS.indexOf(char);
+                if (index !== -1) {
+                    const shift = Math.floor(prng() * ALLOWED_CHARS.length);
+                    const newIndex = (index - shift + ALLOWED_CHARS.length) % ALLOWED_CHARS.length;
+                    result += ALLOWED_CHARS[newIndex];
+                } else {
+                    result += char;
+                }
+            }
+            return result;
+        }
+
+        function decodeText() {
+            const encodedText = document.getElementById('encodedText').value;
+            const keyword = document.getElementById('keyword').value;
+            const seed = encodedText.substring(0, 4);
+            const text = encodedText.substring(4);
+            const decodedText = decodeThaiEng(text, seed, keyword);
+            document.getElementById('result').textContent = decodedText;
+        }
+
+        // ดึงข้อมูลจาก URL parameters ถ้ามี
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedText = urlParams.get('text');
+            if (encodedText) {
+                document.getElementById('encodedText').value = encodedText;
+            }
+        };
+    </script>
+</body>
+</html>
