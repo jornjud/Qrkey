@@ -57,6 +57,10 @@ function generateQRCode(text) {
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
     });
+
+    // เพิ่มการแสดงลิงก์
+    const linkElement = document.getElementById('qrcode-link');
+    linkElement.innerHTML = `<a href="${qrCodeText}" target="_blank">${qrCodeText}</a>`;
 }
 
 // ฟังก์ชันอัพเดตการแปลและสร้าง QR code อัตโนมัติ
