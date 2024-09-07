@@ -49,18 +49,20 @@ function generateQRCode(text) {
     const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}`;
     const qrcode = document.getElementById('qrcode');
     qrcode.innerHTML = "";  // ล้าง QR Code เก่า
+
+    // ปรับการตั้งค่า QR Code ให้มีพื้นที่รอบๆ มากขึ้นและมีพื้นหลังที่ชัดเจน
     new QRCode(qrcode, {
         text: qrCodeText,
-        width: 256,
+        width: 256,  // ขนาด QR Code
         height: 256,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H,
-        quietZone: 15,
-        quietZoneColor: "#ffffff"
+        colorDark: "#000000",  // สีของ QR Code
+        colorLight: "#ffffff",  // พื้นหลังของ QR Code
+        correctLevel: QRCode.CorrectLevel.H,  // ระดับการแก้ไขข้อผิดพลาดสูงสุด
+        quietZone: 20,  // พื้นที่ว่างรอบๆ QR Code เพิ่มขึ้น
+        quietZoneColor: "#ffffff"  // สีของพื้นที่ว่างรอบ QR Code
     });
 
-    // เพิ่มการแสดงลิงก์
+    // เพิ่มลิงก์ที่สร้างขึ้นเพื่อการแสดง
     const linkElement = document.getElementById('qrcode-link');
     linkElement.innerHTML = `<a href="${qrCodeText}" target="_blank">${qrCodeText}</a>`;
 }
