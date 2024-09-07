@@ -43,25 +43,26 @@ function encrypt(text, keyword) {
     return seed + encodeThaiEng(text, seed, keyword);
 }
 
+// ฟังก์ชันสร้าง QR code
+function generateQRCode(text) {
+    const encodedText = encodeURIComponent(text);
+    const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}`;
+    const canvas = document.getElementById('qrcode');
+    canvas.innerHTML = "";  // ล้าง QR Code เก่า
+    new QRCode(canvas, {
+        text: qrCodeText,
+        width: 128,
+        height: 128
+    });
+}
+
 // ฟังก์ชันอัพเดตการแปลและสร้าง QR code อัตโนมัติ
 function updateTranslation() {
     const sourceText = document.getElementById("sourceText").value;
     const keyword = document.getElementById("keyword").value;
     const targetText = encrypt(sourceText, keyword);
     document.getElementById("targetText").value = targetText;
-
     generateQRCode(targetText);
-}
-
-// ฟังก์ชันสร้าง QR code
-function generateQRCode(text) {
-    const canvas = document.getElementById('qrcode');
-    canvas.innerHTML = "";  // ล้าง QR Code เก่า
-    new QRCode(canvas, {
-        text: text,
-        width: 128,
-        height: 128
-    });
 }
 
 // ฟังก์ชันคัดลอกข้อความไปยัง clipboard
