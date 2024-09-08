@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ปริศนาล่าสมบัติ - ร้านกับข้าวเจ้สุ</title>
+    <link rel="stylesheet" href="styles.css">   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🏴‍☠️ ปริศนาล่าสมบัติ</h1>
+        
+        <h2>🧩 ถอดรหัส</h2>
+        <p>ท้าทายไหวพริบของคุณกับปริศนาสุดลับ! ถอดรหัสให้สำเร็จเพื่อรับรางวัลสุดพิเศษ</p>
+        
+        <input type="text" id="encodedText" placeholder="ใส่ข้อความที่เข้ารหัส" aria-label="ใส่ข้อความที่เข้ารหัส">
+        <input type="text" id="keyword" placeholder="ใส่คีย์เวิร์ด" aria-label="ใส่คีย์เวิร์ด">
+        <button onclick="decodeText()">ถอดรหัส</button>
+        <p id="result"></p>
+        
+        <h2>💰 คูปองส่วนลด</h2>
+        <p>ลุ้นรับคูปองส่วนลดสุดคุ้มจากร้านกับข้าวเจ้สุ เพียงแค่คุณแก้ปริศนาได้!</p>
+        
+        <h2>🍽️ By ร้านกับข้าวเจ้สุ</h2>
+        <p>ร่วมสนุกกับกิจกรรมพิเศษจากร้านอาหารอร่อยที่คุณชื่นชอบ พร้อมลุ้นรับส่วนลดและของรางวัลมากมาย</p>
+        
+        <h2>📜 กติกาการร่วมสนุก</h2>
+        <p>อ่านกติกาและเงื่อนไขการเข้าร่วมกิจกรรมได้ที่นี่</p>
+        
+        <h2>🏆 รางวัล</h2>
+        <p>ผู้โชคดีจะได้รับคูปองส่วนลดพิเศษและของรางวัลอื่นๆ อีกมากมาย ร่วมลุ้นเป็นผู้โชคดีกับเรา!</p>
+    </div>
+    
+    <script>
+        const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ' +
+                              'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' +
+                              '!@#$%^&*()_+-=[]{}|;:,./<>?';
+
+        function createPRNG(seed, keyword) {
+            const combined = seed + keyword;
+            const hash = CryptoJS.SHA256(combined).toString(CryptoJS.enc.Hex);
+            let state = parseInt(hash.substring(0, 8), 16);
+            return () => {
+                state = (state * 1103515245 + 12345) & 0x7fffffff;
+                return state / 0x80000000;
+            };
+        }
+
+        function decodeThaiEng(text, seed, keyword) {
+            const prng = createPRNG(seed, keyword);
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const index = ALLOWED_CHARS.indexOf(char);
+                if (index !== -1) {
+                    const shift = Math.floor(prng() * ALLOWED_CHARS.length);
+                    const newIndex = (index - shift + ALLOWED_CHARS.length) % ALLOWED_CHARS.length;
+                    result += ALLOWED_CHARS[newIndex];
+                } else {
+                    result += char;
+                }
+            }
+            return result;
+        }
+
+        function decodeText(autoDecode = false) {
+            const encodedText = document.getElementById('encodedText').value;
+            const keyword = document.getElementById('keyword').value;
+            const seed = encodedText.substring(0, 4);
+            const text = encodedText.substring(4);
+
+            if (keyword === '' && autoDecode) {
+                // ถ้าไม่มีคีย์เวิร์ดและเป็นการถอดรหัสอัตโนมัติ ให้แสดงผลเลย
+                document.getElementById('result').textContent = text; 
+            } else {
+                const decodedText = decodeThaiEng(text, seed, keyword);
+                document.getElementById('result').textContent = decodedText;
+            }
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedText = urlParams.get('text');
+            if (encodedText) {
+                document.getElementById('encodedText').value = encodedText;
+
+                // ถอดรหัสอัตโนมัติถ้าคีย์เวิร์ดเว้นว่างไว้
+                decodeText(true);
+            }
+        };
+    </script>
+</body>
+</html>
