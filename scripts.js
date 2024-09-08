@@ -34,9 +34,37 @@ function encodeThaiEng(text, seed, keyword) {
     return result;
 }
 
+function decodeThaiEng(encodedText, seed, keyword) {
+    // ถ้าไม่มี keyword ให้คืนค่า encodedText โดยตัดส่วน seed ออก
+    if (!keyword) {
+        return encodedText;
+    }
+
+    const prng = createPRNG(seed, keyword);
+    let result = '';
+    for (let i = 0; i < encodedText.length; i++) {
+        const char = encodedText[i];
+        const index = ALLOWED_CHARS.indexOf(char);
+        if (index !== -1) {
+            const shift = Math.floor(prng() * ALLOWED_CHARS.length);
+            const newIndex = (index - shift + ALLOWED_CHARS.length) % ALLOWED_CHARS.length;
+            result += ALLOWED_CHARS[newIndex];
+        } else {
+            result += char;
+        }
+    }
+    return result;
+}
+
 function encrypt(text, keyword) {
     const seed = generateShortSeed();
     return seed + encodeThaiEng(text, seed, keyword);
+}
+
+function decrypt(encodedText, keyword) {
+    const seed = encodedText.slice(0, 4);
+    const text = encodedText.slice(4);
+    return decodeThaiEng(text, seed, keyword);
 }
 
 function generateQRCode(text) {
@@ -132,11 +160,35 @@ async function shareQRCode() {
     }
 }
 
+function decodeText() {
+    const encodedText = new URLSearchParams(window.location.search).get('text');
+    const keyword = document.getElementById('keyword').value;
+
+    if (encodedText) {
+        const decodedText = decrypt(encodedText, keyword);
+        document.getElementById('decodedText').textContent = decodedText;
+    } else {
+        alert('ไม่พบข้อความที่เข้ารหัส');
+    }
+}
+
 // เพิ่ม event listener เมื่อโหลดหน้าเว็บเสร็จ
 document.addEventListener('DOMContentLoaded', function() {
     const convertButton = document.getElementById('convertButton');
     if (convertButton) {
         convertButton.addEventListener('click', updateTranslation);
+    }
+
+    const decodeButton = document.getElementById('decodeButton');
+    if (decodeButton) {
+        decodeButton.addEventListener('click', decodeText);
+    }
+
+    // ถอดรหัสอัตโนมัติเมื่อโหลดหน้าถ้าไม่มี keyword
+    const encodedText = new URLSearchParams(window.location.search).get('text');
+    if (encodedText) {
+        const decodedText = decrypt(encodedText, '');
+        document.getElementById('decodedText').textContent = decodedText;
     }
 
     // เพิ่ม event listener สำหรับการกด Enter ใน input fields
@@ -145,7 +197,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleEnterKey(event) {
         if (event.key === 'Enter') {
-            updateTranslation();
+            if (sourceText) {
+                updateTranslation();
+            } else if (keyword) {
+                decodeText();
+            }
         }
     }
 
