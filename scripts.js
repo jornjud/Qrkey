@@ -18,6 +18,11 @@ function createPRNG(seed, keyword) {
 }
 
 function encodeThaiEng(text, seed, keyword) {
+    // ถ้าไม่มี keyword ให้คืนค่าข้อความเดิม
+    if (!keyword) {
+        return text;
+    }
+    
     const prng = createPRNG(seed, keyword);
     let result = '';
     for (let i = 0; i < text.length; i++) {
@@ -35,7 +40,7 @@ function encodeThaiEng(text, seed, keyword) {
 }
 
 function decodeThaiEng(encodedText, seed, keyword) {
-    // ถ้าไม่มี keyword ให้คืนค่า encodedText โดยตัดส่วน seed ออก
+    // ถ้าไม่มี keyword ให้คืนค่าข้อความเดิม
     if (!keyword) {
         return encodedText;
     }
@@ -57,11 +62,17 @@ function decodeThaiEng(encodedText, seed, keyword) {
 }
 
 function encrypt(text, keyword) {
+    if (!keyword) {
+        return text; // ไม่มีการเข้ารหัสถ้าไม่มี keyword
+    }
     const seed = generateShortSeed();
     return seed + encodeThaiEng(text, seed, keyword);
 }
 
 function decrypt(encodedText, keyword) {
+    if (!keyword) {
+        return encodedText.slice(4); // ตัด seed ออกและคืนค่าข้อความเดิม
+    }
     const seed = encodedText.slice(0, 4);
     const text = encodedText.slice(4);
     return decodeThaiEng(text, seed, keyword);
@@ -161,7 +172,8 @@ async function shareQRCode() {
 }
 
 function decodeText() {
-    const encodedText = new URLSearchParams(window.location.search).get('text');
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedText = urlParams.get('text');
     const keyword = document.getElementById('keyword').value;
 
     if (encodedText) {
@@ -185,7 +197,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ถอดรหัสอัตโนมัติเมื่อโหลดหน้าถ้าไม่มี keyword
-    const encodedText = new URLSearchParams(window.location.search).get('text');
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedText = urlParams.get('text');
     if (encodedText) {
         const decodedText = decrypt(encodedText, '');
         document.getElementById('decodedText').textContent = decodedText;
