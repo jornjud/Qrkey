@@ -38,5 +38,29 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedText = urlParams.get('text');
+            if (encodedText) {
+                const decodedText = decrypt(encodedText, '');
+                document.getElementById('decodedText').textContent = decodedText;
+            }
+
+            const decodeButton = document.getElementById('decodeButton');
+            if (decodeButton) {
+                decodeButton.addEventListener('click', decodeText);
+            }
+
+            const keyword = document.getElementById('keyword');
+            if (keyword) {
+                keyword.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        decodeText();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
