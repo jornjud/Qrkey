@@ -66,19 +66,21 @@
         }
 
         function decodeText() {
-            const encodedText = document.getElementById('encodedText').value;
-            const keyword = document.getElementById('keyword').value;
-            const seed = encodedText.substring(0, 4);
-            const text = encodedText.substring(4);
-            
-            if (keyword === '') {
-                // ถ้าไม่มีคีย์เวิร์ด ให้แสดงผลลัพธ์โดยไม่ทำการถอดรหัส
-                document.getElementById('result').textContent = text;
-            } else {
-                const decodedText = decodeThaiEng(text, seed, keyword);
-                document.getElementById('result').textContent = decodedText;
-            }
-        }
+    const encodedText = document.getElementById('encodedText').value;
+    const keyword = document.getElementById('keyword').value;
+    const seed = encodedText.substring(0, 4); // ส่วนแรกของข้อความคือ seed
+    const text = encodedText.substring(4); // ส่วนที่เหลือคือข้อความที่เข้ารหัส
+    
+    if (keyword === '') {
+        // ถ้าไม่มีคีย์เวิร์ด แสดงผลข้อความต้นฉบับที่ไม่ได้เข้ารหัส (ไม่มีการถอดรหัส)
+        document.getElementById('result').textContent = encodedText;
+    } else {
+        // กรณีมีคีย์เวิร์ด ทำการถอดรหัสปกติ
+        const decodedText = decodeThaiEng(text, seed, keyword);
+        document.getElementById('result').textContent = decodedText;
+    }
+}
+
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
