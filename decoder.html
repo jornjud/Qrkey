@@ -18,6 +18,7 @@
         <input type="text" id="keyword" placeholder="ใส่คีย์เวิร์ด" aria-label="ใส่คีย์เวิร์ด">
         <button id="decodeButton" onclick="decodeText()">ถอดรหัส</button>
         <p id="result"></p>
+        <p>กดถอดรหัสได้เลยหากไม่มีคีย์เวิร์ด</p>
         
         <h2>💰 คูปองส่วนลด</h2>
         <p>ลุ้นรับคูปองส่วนลดสุดคุ้มจากร้านกับข้าวเจ้สุ เพียงแค่คุณแก้ปริศนาได้!</p>
@@ -69,10 +70,10 @@
             const keyword = document.getElementById('keyword').value;
             const seed = encodedText.substring(0, 4);
             const text = encodedText.substring(4);
-
+            
             if (keyword === '') {
-                // ถ้าไม่มีคีย์เวิร์ด ให้แสดงผลลัพธ์โดยตรง
-                document.getElementById('result').textContent = text; 
+                // ถ้าไม่มีคีย์เวิร์ด ให้แสดงผลลัพธ์โดยไม่ทำการถอดรหัส
+                document.getElementById('result').textContent = text;
             } else {
                 const decodedText = decodeThaiEng(text, seed, keyword);
                 document.getElementById('result').textContent = decodedText;
@@ -84,12 +85,6 @@
             const encodedText = urlParams.get('text');
             if (encodedText) {
                 document.getElementById('encodedText').value = encodedText;
-                const keyword = document.getElementById('keyword').value;
-
-                // ถ้าคีย์เวิร์ดว่าง ให้กดปุ่มถอดรหัสอัตโนมัติ
-                if (keyword === '') {
-                    decodeText(); // เรียกใช้ฟังก์ชันถอดรหัสทันที
-                }
             }
         };
     </script>
