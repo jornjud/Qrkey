@@ -1,64 +1,91 @@
+<!-- decoder.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏴‍☠️ ปริศนาล่าสมบัติ</title>
+    <title>🔍 ถอดรหัสปริศนา</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .decoder-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #decodedContent {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            word-break: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+
+        #decodeButton {
+            margin-top: 10px;
+        }
+
+        #hintMessage {
+            margin-top: 10px;
+            color: var(--primary-color);
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🏴‍☠️ ปริศนาล่าสมบัติ</h1>
-
-        <h2>🧩 ถอดรหัส</h2>
-        <p>ท้าทายไหวพริบของคุณกับปริศนาสุดลับ! ถอดรหัสให้สำเร็จเพื่อรับรางวัลสุดพิเศษ</p>
-
-        <div id="decodedContent">
-            <h3>ข้อความที่ถอดรหัสแล้ว:</h3>
-            <p id="decodedText"></p>
-        </div>
-
-        <div id="keywordInput">
-            <input type="text" id="keyword" placeholder="ใส่คีย์เวิร์ด (ถ้ามี)">
-            <button id="decodeButton">ถอดรหัส</button>
-        </div>
-
-        <h2>💰 คูปองส่วนลด</h2>
-        <p>ลุ้นรับคูปองส่วนลดสุดคุ้มจากร้านกับข้าวเจ้สุ เพียงแค่คุณแก้ปริศนาได้!</p>
-
-        <h2>🍽️ By ร้านกับข้าวเจ้สุ</h2>
-        <p>ร่วมสนุกกับกิจกรรมพิเศษจากร้านอาหารอร่อยที่คุณชื่นชอบ พร้อมลุ้นรับส่วนลดและของรางวัลมากมาย</p>
-
-        <h2>📜 กติกาการร่วมสนุก</h2>
-        <p>อ่านกติกาและเงื่อนไขการเข้าร่วมกิจกรรมได้ที่นี่</p>
-
-        <h2>🏆 รางวัล</h2>
-        <p>ผู้โชคดีจะได้รับคูปองส่วนลดพิเศษและของรางวัลอื่นๆ อีกมากมาย ร่วมลุ้นเป็นผู้โชคดีกับเรา!</p>
+    <div class="container decoder-container">
+        <h1>🔍 ถอดรหัสปริศนา</h1>
+        
+        <input type="text" id="keyword" placeholder="🔑ใส่คีย์เวิร์ด (ถ้ามี)">
+        <button id="decodeButton">🔓🔑 ถอดรหัส</button>
+        
+        <div id="hintMessage"></div> <!-- Display the hint here -->
+        <div id="decodedContent"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="scripts.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const encodedText = urlParams.get('text');
-            if (encodedText) {
-                const decodedText = decrypt(encodedText, '');
-                document.getElementById('decodedText').textContent = decodedText;
+            const hint = urlParams.get('hint');  // Get the hint from URL
+            const keywordElement = document.getElementById('keyword');
+            const decodedContentElement = document.getElementById('decodedContent');
+            const decodeButton = document.getElementById('decodeButton');
+            const hintMessage = document.getElementById('hintMessage');
+
+            if (hint) {
+                hintMessage.textContent = `💡 คำใบ้: ${decodeURIComponent(hint)}`;
             }
 
-            const decodeButton = document.getElementById('decodeButton');
+            function decodeText() {
+                if (encodedText) {
+                    const keyword = keywordElement.value;
+                    const decodedText = decrypt(decodeURIComponent(encodedText), keyword);
+                    decodedContentElement.innerHTML = `<strong>ข้อความที่ถอดรหัสแล้ว:</strong><br>${decodedText}`;
+                } else {
+                    decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
+                }
+            }
+            
             if (decodeButton) {
                 decodeButton.addEventListener('click', decodeText);
             }
-
-            const keyword = document.getElementById('keyword');
-            if (keyword) {
-                keyword.addEventListener('keypress', function(event) {
+            
+            if (keywordElement) {
+                keywordElement.addEventListener('keypress', function(event) {
                     if (event.key === 'Enter') {
                         decodeText();
                     }
                 });
+            }
+
+            if (encodedText) {
+                decodeText();
             }
         });
     </script>

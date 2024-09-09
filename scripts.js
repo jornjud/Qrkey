@@ -9,8 +9,10 @@ function generateShortSeed() {
 
 function createPRNG(seed, keyword) {
     const combined = seed + keyword;
-    const hash = CryptoJS.SHA256(combined).toString(CryptoJS.enc.Hex);
-    let state = parseInt(hash.substring(0, 8), 16);
+    let state = 0;
+    for (let i = 0; i < combined.length; i++) {
+        state = ((state << 5) - state + combined.charCodeAt(i)) | 0;
+    }
     return () => {
         state = (state * 1103515245 + 12345) & 0x7fffffff;
         return state / 0x80000000;
@@ -18,11 +20,10 @@ function createPRNG(seed, keyword) {
 }
 
 function encodeThaiEng(text, seed, keyword) {
-    // ถ้าไม่มี keyword ให้คืนค่าข้อความเดิม
     if (!keyword) {
         return text;
     }
-    
+
     const prng = createPRNG(seed, keyword);
     let result = '';
     for (let i = 0; i < text.length; i++) {
@@ -40,7 +41,6 @@ function encodeThaiEng(text, seed, keyword) {
 }
 
 function decodeThaiEng(encodedText, seed, keyword) {
-    // ถ้าไม่มี keyword ให้คืนค่าข้อความเดิม
     if (!keyword) {
         return encodedText;
     }
@@ -63,7 +63,7 @@ function decodeThaiEng(encodedText, seed, keyword) {
 
 function encrypt(text, keyword) {
     if (!keyword) {
-        return text; // ไม่มีการเข้ารหัสถ้าไม่มี keyword
+        return text;
     }
     const seed = generateShortSeed();
     return seed + encodeThaiEng(text, seed, keyword);
@@ -71,157 +71,142 @@ function encrypt(text, keyword) {
 
 function decrypt(encodedText, keyword) {
     if (!keyword) {
-        return encodedText.slice(4); // ตัด seed ออกและคืนค่าข้อความเดิม
+        return encodedText;
     }
     const seed = encodedText.slice(0, 4);
     const text = encodedText.slice(4);
     return decodeThaiEng(text, seed, keyword);
 }
 
-function generateQRCode(text) {
+function generateQRCode(text, hint) {
     const encodedText = encodeURIComponent(text);
-    const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}`;
+    const encodedHint = encodeURIComponent(hint || '');  // Encode hint if provided
+    const qrCodeText = `https://jornjud.github.io/QrKey2/decoder.html?text=${encodedText}&hint=${encodedHint}`;
     const qrcode = document.getElementById('qrcode');
-    qrcode.innerHTML = "";  // ล้าง QR Code เก่า
-    new QRCode(qrcode, {
-        text: qrCodeText,
-        width: 300,
-        height: 300,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H,
-        quietZone: 10,
-        quietZoneColor: "#ffffff"
-    });
+    if (qrcode) {
+        qrcode.innerHTML = "";  // ล้าง QR Code เก่า
+        
+        // สร้าง QR code
+        new QRCode(qrcode, {
+            text: qrCodeText,
+            width: 256,
+            height: 256,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        // เพิ่มกรอบสีส้ม
+        qrcode.style.border = '10px solid #FFA500';
+        qrcode.style.display = 'inline-block';
+        
+        // เพิ่มรูปภาพที่อัพโหลดตรงกลาง
+        const uploadedImage = document.getElementById('uploadedImage');
+        if (uploadedImage.src && uploadedImage.src !== window.location.href) {
+            const centerImage = document.createElement('img');
+            centerImage.src = uploadedImage.src;
+            centerImage.style.position = 'absolute';
+            centerImage.style.top = '50%';
+            centerImage.style.left = '50%';
+            centerImage.style.transform = 'translate(-50%, -50%)';
+            centerImage.style.width = '20%';
+            centerImage.style.height = '20%';
+            centerImage.style.borderRadius = '50%';
+            qrcode.appendChild(centerImage);
+        }
 
-    // เพิ่มการแสดงลิงก์
-    const linkElement = document.getElementById('qrcode-link');
-    linkElement.innerHTML = `<a href="${qrCodeText}" target="_blank">${qrCodeText}</a>`;
+        const linkElement = document.getElementById('qrcode-link');
+        if (linkElement) {
+            linkElement.innerHTML = `<a href="${qrCodeText}" target="_blank">${qrCodeText}</a>`;
+        }
+    }
+}
+
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgElement = document.getElementById('uploadedImage');
+            imgElement.src = e.target.result;
+            imgElement.style.display = 'none';  // ซ่อนรูปภาพจริง แต่เก็บข้อมูลไว้
+            updateTranslation();  // สร้าง QR Code ใหม่พร้อมรูปภาพ
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
 function updateTranslation() {
-    const sourceText = document.getElementById("sourceText").value;
-    const keyword = document.getElementById("keyword").value;
-    const targetText = encrypt(sourceText, keyword);
-    document.getElementById("targetText").value = targetText;
-    generateQRCode(targetText);
+    const sourceText = document.getElementById("sourceText");
+    const keyword = document.getElementById("keyword");
+    const hint = document.getElementById("hint");  // New hint input
+
+    if (sourceText && keyword) {
+        const targetText = encrypt(sourceText.value, keyword.value);
+        generateQRCode(targetText, hint.value);  // Pass the hint value
+    }
 }
 
-function copyToClipboard(elementId) {
-    const element = document.getElementById(elementId);
-    element.select();
-    document.execCommand('copy');
-    alert('คัดลอกข้อความแล้ว!');
-}
-
-function createQRCodeWithFrame() {
-    return new Promise((resolve) => {
-        const qrCanvas = document.querySelector("#qrcode canvas");
-        const frameCanvas = document.createElement('canvas');
-        const ctx = frameCanvas.getContext('2d');
-
-        // กำหนดขนาดของ canvas ใหม่ (เพิ่มขอบ)
-        const padding = 40;
-        const borderWidth = 4;
-        frameCanvas.width = qrCanvas.width + (padding * 2) + (borderWidth * 4);
-        frameCanvas.height = frameCanvas.width;
-
-        // วาดพื้นหลังสีขาว
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, frameCanvas.width, frameCanvas.height);
-
-        // วาดกรอบนอกสีดำ
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = borderWidth;
-        ctx.strokeRect(borderWidth / 2, borderWidth / 2, frameCanvas.width - borderWidth, frameCanvas.height - borderWidth);
-
-        // วาดกรอบในสีเขียว
-        ctx.strokeStyle = '#4CAF50';
-        ctx.strokeRect(borderWidth * 2, borderWidth * 2, frameCanvas.width - borderWidth * 4, frameCanvas.height - borderWidth * 4);
-
-        // วาด QR code ลงบน canvas ใหม่
-        ctx.drawImage(qrCanvas, padding + borderWidth * 2, padding + borderWidth * 2);
-
-        frameCanvas.toBlob((blob) => {
-            resolve(blob);
+function saveQRCode() {
+    const qrcode = document.getElementById('qrcode');
+    if (qrcode) {
+        html2canvas(qrcode).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL();
+            link.click();
         });
-    });
-}
-
-async function saveQRCode() {
-    const blob = await createQRCodeWithFrame();
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'qrcode_with_frame.png';
-    link.click();
-}
-
-async function shareQRCode() {
-    const blob = await createQRCodeWithFrame();
-    const file = new File([blob], "qrcode_with_frame.png", { type: "image/png" });
-    if (navigator.share) {
-        navigator.share({
-            title: 'SQRC QR Code',
-            text: 'นี่คือ QR Code สำหรับข้อความที่เข้ารหัสของฉัน',
-            files: [file]
-        }).then(() => console.log('Share was successful.'))
-        .catch((error) => console.log('Sharing failed', error));
-    } else {
-        alert('ขออภัย, เบราว์เซอร์ของคุณไม่รองรับการแชร์');
     }
 }
 
-function decodeText() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const encodedText = urlParams.get('text');
-    const keyword = document.getElementById('keyword').value;
-
-    if (encodedText) {
-        const decodedText = decrypt(encodedText, keyword);
-        document.getElementById('decodedText').textContent = decodedText;
-    } else {
-        alert('ไม่พบข้อความที่เข้ารหัส');
+function shareQRCode() {
+    const qrcode = document.getElementById('qrcode');
+    if (qrcode) {
+        html2canvas(qrcode).then(canvas => {
+            canvas.toBlob(blob => {
+                const file = new File([blob], "qrcode.png", { type: "image/png" });
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'SQRC QR Code',
+                        text: 'Check out this SQRC QR Code',
+                        files: [file]
+                    }).catch(console.error);
+                } else {
+                    alert('Web Share API is not supported in your browser. You can save the QR code and share it manually.');
+                }
+            });
+        });
     }
 }
 
-// เพิ่ม event listener เมื่อโหลดหน้าเว็บเสร็จ
+function copyToClipboard() {
+    const qrcodeLink = document.getElementById('qrcode-link');
+    if (qrcodeLink) {
+        const link = qrcodeLink.textContent;
+        navigator.clipboard.writeText(link).then(() => {
+            alert('คัดลอกลิงก์แล้ว!');
+        }).catch(err => {
+            console.error('ไม่สามารถคัดลอกข้อความ: ', err);
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const convertButton = document.getElementById('convertButton');
-    if (convertButton) {
-        convertButton.addEventListener('click', updateTranslation);
-    }
-
-    const decodeButton = document.getElementById('decodeButton');
-    if (decodeButton) {
-        decodeButton.addEventListener('click', decodeText);
-    }
-
-    // ถอดรหัสอัตโนมัติเมื่อโหลดหน้าถ้าไม่มี keyword
-    const urlParams = new URLSearchParams(window.location.search);
-    const encodedText = urlParams.get('text');
-    if (encodedText) {
-        const decodedText = decrypt(encodedText, '');
-        document.getElementById('decodedText').textContent = decodedText;
-    }
-
-    // เพิ่ม event listener สำหรับการกด Enter ใน input fields
+    const saveButton = document.getElementById('saveButton');
+    const shareButton = document.getElementById('shareButton');
+    const copyButton = document.getElementById('copyButton');
+    const imageUpload = document.getElementById('imageUpload');
     const sourceText = document.getElementById('sourceText');
     const keyword = document.getElementById('keyword');
+    const hint = document.getElementById('hint');  // New hint input
 
-    function handleEnterKey(event) {
-        if (event.key === 'Enter') {
-            if (sourceText) {
-                updateTranslation();
-            } else if (keyword) {
-                decodeText();
-            }
-        }
-    }
-
-    if (sourceText) {
-        sourceText.addEventListener('keypress', handleEnterKey);
-    }
-    if (keyword) {
-        keyword.addEventListener('keypress', handleEnterKey);
-    }
+    if (convertButton) convertButton.addEventListener('click', updateTranslation);
+    if (saveButton) saveButton.addEventListener('click', saveQRCode);
+    if (shareButton) shareButton.addEventListener('click', shareQRCode);
+    if (copyButton) copyButton.addEventListener('click', copyToClipboard);
+    if (imageUpload) imageUpload.addEventListener('change', handleImageUpload);
+    if (sourceText) sourceText.addEventListener('input', updateTranslation);
+    if (keyword) keyword.addEventListener('input', updateTranslation);
+    if (hint) hint.addEventListener('input', updateTranslation);  // Update QR on hint input
 });

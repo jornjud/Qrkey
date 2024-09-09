@@ -4,7 +4,7 @@
     --background-color: #f4f4f4;
     --text-color: #333;
     --border-color: #ddd;
-    --highlight-color: #ffc107; /* For important elements */
+    --highlight-color: #ffc107;
 }
 
 * {
@@ -30,8 +30,9 @@ body {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
     max-width: 500px;
-    width: 100%;
+    margin: 0 auto;
 }
 
 h1 {
@@ -41,11 +42,12 @@ h1 {
     text-align: center;
 }
 
-h2, p {
-    margin-bottom: 10px;
+p {
+    margin-bottom: 15px;
+    text-align: center;
 }
 
-textarea, input[type="text"], button {
+input[type="text"], button, .upload-btn {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -55,47 +57,81 @@ textarea, input[type="text"], button {
     transition: border-color 0.3s ease;
 }
 
-textarea:focus, input[type="text"]:focus {
+input[type="text"]:focus {
     outline: none;
     border-color: var(--primary-color);
 }
 
-button {
+button, .upload-btn {
     background-color: var(--primary-color);
     color: white;
-    padding: 12px 20px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
     transition: background-color 0.3s ease;
+    text-align: center;
+    display: inline-block;
 }
 
-button:hover {
+button:hover, .upload-btn:hover {
     background-color: var(--secondary-color);
 }
 
-.qrcode-outer-container, .qrcode-inner-container {
+#imageUpload {
+    display: none;
+}
+
+.upload-btn {
+    background-color: var(--highlight-color);
+}
+
+.upload-btn:hover {
+    background-color: #e5ac00;
+}
+
+.qrcode-outer-container {
     margin: 20px 0;
-    padding: 16px;
-    border-radius: 10px;
-    border: 2px solid var(--border-color);
-    text-align: center;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qrcode-inner-container {
+    display: inline-block;
+    position: relative;
+}
+
+#qrcode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#qrcode img {
+    max-width: 100%;
+    height: auto;
 }
 
 .qrcode-link {
-    margin-top: 10px;
     word-break: break-all;
+    text-align: center;
+    margin-top: 10px;
     font-size: 14px;
-    color: var(--primary-color);
 }
 
-@media (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
 
+.button-group button {
+    width: 48%;
+}
+
+@media (max-width: 480px) {
     .container {
+        width: 95%;
         padding: 20px;
     }
 
@@ -103,8 +139,17 @@ button:hover {
         font-size: 20px;
     }
 
-    textarea, input[type="text"], button {
+    input[type="text"], button, .upload-btn {
         padding: 10px;
         font-size: 14px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group button {
+        width: 100%;
+        margin-bottom: 10px;
     }
 }

@@ -1,36 +1,46 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text to SQRC Converter</title>
+    <title>QrKey2 - เปลี่ยนข้อความธรรมดาให้เป็น SQRC QrCode แบบเข้ารหัส</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Text to SQRC Converter</h1>
-        <p>หากไม่ต้องการใส่คีย์เวิร์ดให้ใส่ "0000" ก่อนหน้าข้อความเช่น "0000ยินดีต้อนรับ"</p>
-        <textarea id="sourceText" placeholder="ใส่ข้อความที่ต้องการแปลง" aria-label="ใส่ข้อความที่ต้องการแปลง"></textarea>
-        <input type="text" id="keyword" placeholder="ใส่คีย์เวิร์ด" aria-label="ใส่คีย์เวิร์ด">
-        <button onclick="updateTranslation()">แปลงเป็น SQRC</button>
+        <h1>QrKey2</h1>
+        <p>เปลี่ยนข้อความธรรมดาให้เป็น SQRC QrCode แบบเข้ารหัส</p>
+        
+        <input type="text" id="sourceText" placeholder="ใส่ข้อความที่ต้องการเข้ารหัส">
+        <input type="text" id="keyword" placeholder="ใส่คีย์เวิร์ด (ไม่บังคับ)">
+        <input type="text" id="hint" placeholder="ใส่คำใบ้ (ไม่บังคับ)">
+        <button id="convertButton">แปลงเป็น SQRC</button>
+        
+        <input type="file" id="imageUpload" accept="image/*">
+        <label for="imageUpload" class="upload-btn">อัพโหลดรูปภาพ</label>
         
         <div class="qrcode-outer-container">
             <div class="qrcode-inner-container">
                 <div id="qrcode"></div>
             </div>
-            <div id="qrcode-link" class="qrcode-link"></div>
         </div>
+        
+        <div id="qrcode-link" class="qrcode-link"></div>
         
         <div class="button-group">
-            <button onclick="saveQRCode()">บันทึก QR Code</button>
-            <button onclick="shareQRCode()">แชร์ QR Code</button>
+            <button id="saveButton">บันทึก QR Code</button>
+            <button id="shareButton">แชร์ QR Code</button>
         </div>
         
-        <textarea id="targetText" readonly aria-label="ผลลัพธ์ที่แปลงแล้ว"></textarea>
-        <button onclick="copyToClipboard('targetText')">คัดลอกผลลัพธ์</button>
+        <button id="copyButton">คัดลอกผลลัพธ์</button>
     </div>
+    
+    <img id="uploadedImage" style="display:none;">
+    
     <script src="scripts.js"></script>
 </body>
 </html>
