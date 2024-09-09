@@ -129,6 +129,17 @@ button:hover, .upload-btn:hover {
     width: 48%;
 }
 
+#decodedContent {
+    word-break: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
 @media (max-width: 480px) {
     .container {
         width: 95%;
