@@ -83,7 +83,7 @@ function decrypt(encodedText, keyword) {
 function generateQRCode(text, hint) {
     const encodedText = encodeURIComponent(text);
     const encodedHint = encodeURIComponent(hint || '');  
-    const qrCodeText = `https://jornjud.github.io/QrKey2/decoder.html?text=${encodedText}&hint=${encodedHint}`;
+    const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}&hint=${encodedHint}`;
     const qrcode = document.getElementById('qrcode');
     
     if (qrcode) {
