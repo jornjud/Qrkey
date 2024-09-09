@@ -1,5 +1,3 @@
-// scripts.js
-
 // ตัวอักษรที่อนุญาตในการเข้ารหัส
 const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ' +
                       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' +
@@ -82,12 +80,14 @@ function decrypt(encodedText, keyword) {
 
 function generateQRCode(text, hint) {
     const encodedText = encodeURIComponent(text);
-    const encodedHint = encodeURIComponent(hint || '');  
+    const encodedHint = encodeURIComponent(hint || '');  // Encode hint if provided
     const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}&hint=${encodedHint}`;
     const qrcode = document.getElementById('qrcode');
     
     if (qrcode) {
-        qrcode.innerHTML = "";  
+        qrcode.innerHTML = "";  // Clear existing QR code
+
+        // Create the QR code
         new QRCode(qrcode, {
             text: qrCodeText,
             width: 256,
@@ -99,9 +99,13 @@ function generateQRCode(text, hint) {
         
         qrcode.style.border = '10px solid #FFA500';
         qrcode.style.display = 'inline-block';
-        
+
+        // Image or Emoji at center
         const uploadedImage = document.getElementById('uploadedImage');
+        const emoji = document.getElementById('emojiInput').value;
+
         if (uploadedImage.src && uploadedImage.src !== window.location.href) {
+            // If an image is uploaded, show it at the center
             const centerImage = document.createElement('img');
             centerImage.src = uploadedImage.src;
             centerImage.style.position = 'absolute';
@@ -112,6 +116,16 @@ function generateQRCode(text, hint) {
             centerImage.style.height = '20%';
             centerImage.style.borderRadius = '50%';
             qrcode.appendChild(centerImage);
+        } else if (emoji) {
+            // If no image, but emoji is provided
+            const centerEmoji = document.createElement('div');
+            centerEmoji.textContent = emoji;
+            centerEmoji.style.position = 'absolute';
+            centerEmoji.style.top = '50%';
+            centerEmoji.style.left = '50%';
+            centerEmoji.style.transform = 'translate(-50%, -50%)';
+            centerEmoji.style.fontSize = '48px';  // Adjust emoji size
+            qrcode.appendChild(centerEmoji);
         }
 
         const linkElement = document.getElementById('qrcode-link');
@@ -128,8 +142,8 @@ function handleImageUpload(event) {
         reader.onload = function(e) {
             const imgElement = document.getElementById('uploadedImage');
             imgElement.src = e.target.result;
-            imgElement.style.display = 'none';  
-            updateTranslation();  
+            imgElement.style.display = 'none';  // Hide actual image but keep data
+            updateTranslation();  // Regenerate QR code with image
         };
         reader.readAsDataURL(file);
     }
@@ -138,17 +152,11 @@ function handleImageUpload(event) {
 function updateTranslation() {
     const sourceText = document.getElementById("sourceText");
     const keyword = document.getElementById("keyword");
-    const hint = document.getElementById("hint");  
-    const emojiInput = document.getElementById("emojiInput");  // Get emoji input
+    const hint = document.getElementById("hint");  // New hint input
 
     if (sourceText && keyword) {
-        let targetText = encrypt(sourceText.value, keyword.value);
-
-        if (emojiInput.value) {
-            targetText += " " + emojiInput.value;  // Append emoji if available
-        }
-
-        generateQRCode(targetText, hint.value);  
+        const targetText = encrypt(sourceText.value, keyword.value);
+        generateQRCode(targetText, hint.value);  // Pass the hint value
     }
 }
 
@@ -202,10 +210,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const shareButton = document.getElementById('shareButton');
     const copyButton = document.getElementById('copyButton');
     const imageUpload = document.getElementById('imageUpload');
+    const emojiInput = document.getElementById('emojiInput');
     const sourceText = document.getElementById('sourceText');
     const keyword = document.getElementById('keyword');
-    const hint = document.getElementById('hint');  
-    const emojiInput = document.getElementById('emojiInput');  // New emoji input field
+    const hint = document.getElementById('hint');  // New hint input
 
     if (convertButton) convertButton.addEventListener('click', updateTranslation);
     if (saveButton) saveButton.addEventListener('click', saveQRCode);
@@ -214,6 +222,5 @@ document.addEventListener('DOMContentLoaded', function() {
     if (imageUpload) imageUpload.addEventListener('change', handleImageUpload);
     if (sourceText) sourceText.addEventListener('input', updateTranslation);
     if (keyword) keyword.addEventListener('input', updateTranslation);
-    if (hint) hint.addEventListener('input', updateTranslation);  
-    if (emojiInput) emojiInput.addEventListener('input', updateTranslation);  // Update QR on emoji input
+    if (hint) hint.addEventListener('input', updateTranslation);  // Update QR on hint input
 });

@@ -129,20 +129,13 @@ button:hover, .upload-btn:hover {
     width: 48%;
 }
 
-/* styles.css */
-input[type="text"], button, .upload-btn, #emojiInput {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
+#qrcode div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
 }
 
-#emojiInput {
-    margin-bottom: 10px;
-}
 
 @media (max-width: 480px) {
     .container {
