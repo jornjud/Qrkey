@@ -1,3 +1,5 @@
+// scripts.js
+
 // ตัวอักษรที่อนุญาตในการเข้ารหัส
 const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ' +
                       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' +
@@ -80,13 +82,12 @@ function decrypt(encodedText, keyword) {
 
 function generateQRCode(text, hint) {
     const encodedText = encodeURIComponent(text);
-    const encodedHint = encodeURIComponent(hint || '');  // Encode hint if provided
-    const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}&hint=${encodedHint}`;
+    const encodedHint = encodeURIComponent(hint || '');  
+    const qrCodeText = `https://jornjud.github.io/QrKey2/decoder.html?text=${encodedText}&hint=${encodedHint}`;
     const qrcode = document.getElementById('qrcode');
+    
     if (qrcode) {
-        qrcode.innerHTML = "";  // ล้าง QR Code เก่า
-        
-        // สร้าง QR code
+        qrcode.innerHTML = "";  
         new QRCode(qrcode, {
             text: qrCodeText,
             width: 256,
@@ -96,11 +97,9 @@ function generateQRCode(text, hint) {
             correctLevel: QRCode.CorrectLevel.H
         });
         
-        // เพิ่มกรอบสีส้ม
         qrcode.style.border = '10px solid #FFA500';
         qrcode.style.display = 'inline-block';
         
-        // เพิ่มรูปภาพที่อัพโหลดตรงกลาง
         const uploadedImage = document.getElementById('uploadedImage');
         if (uploadedImage.src && uploadedImage.src !== window.location.href) {
             const centerImage = document.createElement('img');
@@ -129,8 +128,8 @@ function handleImageUpload(event) {
         reader.onload = function(e) {
             const imgElement = document.getElementById('uploadedImage');
             imgElement.src = e.target.result;
-            imgElement.style.display = 'none';  // ซ่อนรูปภาพจริง แต่เก็บข้อมูลไว้
-            updateTranslation();  // สร้าง QR Code ใหม่พร้อมรูปภาพ
+            imgElement.style.display = 'none';  
+            updateTranslation();  
         };
         reader.readAsDataURL(file);
     }
@@ -139,11 +138,17 @@ function handleImageUpload(event) {
 function updateTranslation() {
     const sourceText = document.getElementById("sourceText");
     const keyword = document.getElementById("keyword");
-    const hint = document.getElementById("hint");  // New hint input
+    const hint = document.getElementById("hint");  
+    const emojiInput = document.getElementById("emojiInput");  // Get emoji input
 
     if (sourceText && keyword) {
-        const targetText = encrypt(sourceText.value, keyword.value);
-        generateQRCode(targetText, hint.value);  // Pass the hint value
+        let targetText = encrypt(sourceText.value, keyword.value);
+
+        if (emojiInput.value) {
+            targetText += " " + emojiInput.value;  // Append emoji if available
+        }
+
+        generateQRCode(targetText, hint.value);  
     }
 }
 
@@ -199,7 +204,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const imageUpload = document.getElementById('imageUpload');
     const sourceText = document.getElementById('sourceText');
     const keyword = document.getElementById('keyword');
-    const hint = document.getElementById('hint');  // New hint input
+    const hint = document.getElementById('hint');  
+    const emojiInput = document.getElementById('emojiInput');  // New emoji input field
 
     if (convertButton) convertButton.addEventListener('click', updateTranslation);
     if (saveButton) saveButton.addEventListener('click', saveQRCode);
@@ -208,5 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (imageUpload) imageUpload.addEventListener('change', handleImageUpload);
     if (sourceText) sourceText.addEventListener('input', updateTranslation);
     if (keyword) keyword.addEventListener('input', updateTranslation);
-    if (hint) hint.addEventListener('input', updateTranslation);  // Update QR on hint input
+    if (hint) hint.addEventListener('input', updateTranslation);  
+    if (emojiInput) emojiInput.addEventListener('input', updateTranslation);  // Update QR on emoji input
 });

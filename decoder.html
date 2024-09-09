@@ -66,7 +66,7 @@
                 if (encodedText) {
                     const keyword = keywordElement.value;
                     const decodedText = decrypt(decodeURIComponent(encodedText), keyword);
-                    decodedContentElement.innerHTML = `<strong>ข้อความที่ถอดรหัสแล้ว:</strong><br>${decodedText}`;
+                    decodedContentElement.innerHTML = `<strong>ข้อความที่ถอดรหัสแล้ว/ข้อความที่ต้องใส่🔑คีย์เวิร์ด:</strong><br>${decodedText}`;
                 } else {
                     decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
                 }

@@ -129,15 +129,19 @@ button:hover, .upload-btn:hover {
     width: 48%;
 }
 
-#decodedContent {
-    word-break: break-word;
-    max-height: 300px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
+/* styles.css */
+input[type="text"], button, .upload-btn, #emojiInput {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
     border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+#emojiInput {
+    margin-bottom: 10px;
 }
 
 @media (max-width: 480px) {
