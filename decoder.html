@@ -6,101 +6,9 @@
     <title>🔍 ถอดรหัสปริศนา</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .decoder-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 24px;
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        #decodedContent {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            word-break: break-word;
-            max-height: 300px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            text-align: left;
-        }
-
-        #hintMessage {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #888;
-        }
-
-        .result-header {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 10px;
-        }
-
-        .qr-code-link {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #4CAF50;
-        }
-
-        .qr-code-link a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-
-        .qr-code-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
 <body>
-    <div class="decoder-container">
+    <div class="container decoder-container">
         <h1>🔍 ถอดรหัสปริศนา</h1>
         
         <input type="text" id="keyword" placeholder="🔑 ใส่คีย์เวิร์ด (ถ้ามี)">
@@ -138,7 +46,17 @@
                 if (encodedText) {
                     const keyword = keywordElement.value;
                     const decodedText = decrypt(decodeURIComponent(encodedText), keyword);
-                    decodedContentElement.innerHTML = `<span class="result-header">ผลลัพธ์ที่ถอดรหัสแล้ว:</span><br>${decodedText}`;
+
+                    // ตรวจสอบว่าข้อความที่ถอดรหัสแล้วมีอักขระที่ไม่คุ้นเคยหรือไม่
+                    const isEncoded = /[^ก-ฮa-zA-Z0-9\s]/.test(decodedText); // ตัวอักษรที่ไม่ใช่ภาษาไทย อังกฤษ หรือตัวเลข
+
+                    if (keyword && isEncoded) {
+                        // ถ้าใส่คีย์เวิร์ดแล้ว แต่ข้อความยังดูเหมือนถูกเข้ารหัสอยู่
+                        decodedContentElement.innerHTML = `<span class="result-header">ข้อความถูกเข้ารหัส ต้องใส่คีย์เวิร์ดให้ถูกต้องก่อน:</span><br>${decodedText}`;
+                    } else {
+                        // ถ้าเป็นข้อความที่ถอดรหัสได้ถูกต้อง หรือไม่มีคีย์เวิร์ดในการเข้ารหัส
+                        decodedContentElement.innerHTML = `<span class="result-header">ผลลัพธ์ที่ถอดรหัสแล้ว:</span><br>${decodedText}`;
+                    }
                 } else {
                     decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
                 }
