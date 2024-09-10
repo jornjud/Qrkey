@@ -16,7 +16,7 @@
 
         <div id="hintMessage"></div> <!-- Display the hint here -->
 
-        <div id="decodedContent">
+        <div id="decodedContent" style="display: none;"> <!-- ซ่อนผลลัพธ์ก่อนกดปุ่ม -->
             <p class="result-header">ผลลัพธ์ที่ถอดรหัสแล้ว:</p>
             <!-- Decoded text will be inserted here -->
         </div>
@@ -52,26 +52,27 @@
 
                     if (keyword && isEncoded) {
                         // ถ้าใส่คีย์เวิร์ดแล้ว แต่ข้อความยังดูเหมือนถูกเข้ารหัสอยู่
-                        decodedContentElement.innerHTML = `<span class="result-header">ข้อความถูกเข้ารหัส ต้องใส่คีย์เวิร์ดให้ถูกต้องก่อน:</span><br>${decodedText}`;
+                        decodedContentElement.innerHTML = `<span class="result-header">ข้อความถูกเข้ารหัส โปรดใส่คีย์เวิร์ดให้ถูกต้อง:</span>`;
                     } else {
                         // ถ้าเป็นข้อความที่ถอดรหัสได้ถูกต้อง หรือไม่มีคีย์เวิร์ดในการเข้ารหัส
                         decodedContentElement.innerHTML = `<span class="result-header">ผลลัพธ์ที่ถอดรหัสแล้ว:</span><br>${decodedText}`;
                     }
+
+                    // แสดงผลลัพธ์หลังจากกดปุ่มเท่านั้น
+                    decodedContentElement.style.display = 'block';
                 } else {
                     decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
+                    decodedContentElement.style.display = 'block';
                 }
             }
-            
+
+            // ตั้งค่าปุ่มถอดรหัสให้เรียกใช้ฟังก์ชัน decodeText
             decodeButton.addEventListener('click', decodeText);
             keywordElement.addEventListener('keypress', function(event) {
                 if (event.key === 'Enter') {
                     decodeText();
                 }
             });
-
-            if (encodedText) {
-                decodeText();
-            }
         });
     </script>
 </body>
