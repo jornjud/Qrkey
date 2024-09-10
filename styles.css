@@ -1,104 +1,86 @@
-:root {
-    --primary-color: #4CAF50;
-    --secondary-color: #45a049;
-    --background-color: #f4f4f4;
-    --text-color: #333;
-    --border-color: #ddd;
-    --highlight-color: #ffc107;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
+/* Styles */
 body {
-    font-family: 'Sarabun', Arial, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
+    font-family: 'Sarabun', sans-serif;
+    background-color: #f0f0f0;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px;
+    height: 100vh;
+    margin: 0;
 }
 
 .container {
     background-color: #fff;
-    padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 500px;
-    margin: 0 auto;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     text-align: center;
+    max-width: 500px;
+    width: 100%;
 }
 
 h1 {
     font-size: 24px;
-    color: var(--primary-color);
+    color: #4CAF50;
     margin-bottom: 20px;
 }
 
 input[type="text"] {
     width: 100%;
     padding: 12px;
-    margin: 10px 0;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
     font-size: 16px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 button {
     width: 100%;
     padding: 12px;
-    background-color: var(--primary-color);
+    background-color: #4CAF50;
     color: white;
+    font-size: 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
 }
 
 button:hover {
-    background-color: var(--secondary-color);
+    background-color: #45a049;
 }
 
-#decodedContent {
-    margin-top: 20px;
-    padding: 20px;
+.hint-message {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.decoded-content {
+    padding: 15px;
     background-color: #f9f9f9;
     border-radius: 5px;
-    border: 1px solid var(--border-color);
-    word-break: break-word;
-    max-height: 300px;
-    overflow-y: auto;
-    white-space: pre-wrap;
+    margin-top: 20px;
+    word-wrap: break-word;
     text-align: left;
 }
 
-#hintMessage {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #888;
+.success-message {
+    font-size: 16px;
+    color: #4CAF50;
 }
 
-.result-header {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
+.error-message {
+    font-size: 16px;
+    color: #FF0000;
 }
 
 .qr-code-link {
     margin-top: 30px;
     font-size: 14px;
-    color: var(--primary-color);
+    color: #4CAF50;
 }
-
 .qr-code-link a {
-    color: var(--primary-color);
+    color: #4CAF50;
     text-decoration: none;
 }
 
