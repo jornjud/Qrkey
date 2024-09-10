@@ -1,4 +1,3 @@
-<!-- decoder.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -8,17 +7,63 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
         .decoder-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
             text-align: center;
-            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
         }
 
         #decodedContent {
             margin-top: 20px;
-            padding: 15px;
+            padding: 20px;
             background-color: #f9f9f9;
             border-radius: 5px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #ddd;
             word-break: break-word;
             max-height: 300px;
             overflow-y: auto;
@@ -26,28 +71,54 @@
             text-align: left;
         }
 
-        #decodeButton {
-            margin-top: 10px;
-        }
-
         #hintMessage {
             margin-top: 10px;
-            color: var(--primary-color);
+            font-size: 14px;
+            color: #888;
+        }
+
+        .result-header {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .qr-code-link {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #4CAF50;
+        }
+
+        .qr-code-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .qr-code-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="container decoder-container">
+    <div class="decoder-container">
         <h1>🔍 ถอดรหัสปริศนา</h1>
         
-        <input type="text" id="keyword" placeholder="🔑ใส่คีย์เวิร์ด (ถ้ามี)">
-        <button id="decodeButton">🔓🔑 ถอดรหัส</button>
-        
+        <input type="text" id="keyword" placeholder="🔑 ใส่คีย์เวิร์ด (ถ้ามี)">
+        <button id="decodeButton">🔓 ถอดรหัส</button>
+
         <div id="hintMessage"></div> <!-- Display the hint here -->
-        <div id="decodedContent"></div>
-        <p>🔗 อยากสร้าง SQRC ของคุณเอง? <a href="https://jornjud.github.io/QrKey2/" target="_blank">คลิกที่นี่เพื่อไปยัง QrKey2!</a></p>
+
+        <div id="decodedContent">
+            <p class="result-header">ผลลัพธ์ที่ถอดรหัสแล้ว:</p>
+            <!-- Decoded text will be inserted here -->
+        </div>
+
+        <div class="qr-code-link">
+            ✨ สนุกกับการสร้าง QR-Code ของคุณเอง! 🔐<br> 
+            <a href="https://jornjud.github.io/QrKey2/" target="_blank">คลิกที่นี่เพื่อเริ่มสร้าง QR-Code 💡</a>
+        </div>
     </div>
-    
+
     <script src="scripts.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -67,23 +138,18 @@
                 if (encodedText) {
                     const keyword = keywordElement.value;
                     const decodedText = decrypt(decodeURIComponent(encodedText), keyword);
-                    decodedContentElement.innerHTML = `<span style="font-size: 14px; color: #777;"><strong>ข้อความที่ถอดรหัสแล้ว/ข้อความที่ต้องใส่🔑คีย์เวิร์ด:</strong><br>${decodedText}`;
+                    decodedContentElement.innerHTML = `<span class="result-header">ผลลัพธ์ที่ถอดรหัสแล้ว:</span><br>${decodedText}`;
                 } else {
                     decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
                 }
             }
             
-            if (decodeButton) {
-                decodeButton.addEventListener('click', decodeText);
-            }
-            
-            if (keywordElement) {
-                keywordElement.addEventListener('keypress', function(event) {
-                    if (event.key === 'Enter') {
-                        decodeText();
-                    }
-                });
-            }
+            decodeButton.addEventListener('click', decodeText);
+            keywordElement.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    decodeText();
+                }
+            });
 
             if (encodedText) {
                 decodeText();
