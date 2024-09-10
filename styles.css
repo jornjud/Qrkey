@@ -1,89 +1,163 @@
-/* Styles */
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #45a049;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --border-color: #ddd;
+    --highlight-color: #ffc107;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    font-family: 'Sarabun', sans-serif;
-    background-color: #f0f0f0;
+    font-family: 'Sarabun', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
 }
 
 .container {
     background-color: #fff;
-    border-radius: 10px;
     padding: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
     max-width: 500px;
-    width: 100%;
+    margin: 0 auto;
 }
 
 h1 {
     font-size: 24px;
-    color: #4CAF50;
+    color: var(--primary-color);
     margin-bottom: 20px;
+    text-align: center;
 }
 
-input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
+p {
     margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    text-align: center;
 }
 
-button {
+input[type="text"], button, .upload-btn {
     width: 100%;
     padding: 12px;
-    background-color: #4CAF50;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+button, .upload-btn {
+    background-color: var(--primary-color);
     color: white;
-    font-size: 16px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    display: inline-block;
 }
 
-button:hover {
-    background-color: #45a049;
+button:hover, .upload-btn:hover {
+    background-color: var(--secondary-color);
 }
 
-.hint-message {
+#imageUpload {
+    display: none;
+}
+
+.upload-btn {
+    background-color: var(--highlight-color);
+}
+
+.upload-btn:hover {
+    background-color: #e5ac00;
+}
+
+.qrcode-outer-container {
+    margin: 20px 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qrcode-inner-container {
+    display: inline-block;
+    position: relative;
+}
+
+#qrcode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#qrcode img {
+    max-width: 100%;
+    height: auto;
+}
+
+.qrcode-link {
+    word-break: break-all;
+    text-align: center;
+    margin-top: 10px;
     font-size: 14px;
-    color: #888;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 15px;
 }
 
-.decoded-content {
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    margin-top: 20px;
-    word-wrap: break-word;
-    text-align: left;
+.button-group button {
+    width: 48%;
 }
 
-.success-message {
-    font-size: 16px;
-    color: #4CAF50;
+#qrcode div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
 }
 
-.error-message {
-    font-size: 16px;
-    color: #FF0000;
-}
 
-.qr-code-link {
-    margin-top: 30px;
-    font-size: 14px;
-    color: #4CAF50;
-}
-.qr-code-link a {
-    color: #4CAF50;
-    text-decoration: none;
-}
+@media (max-width: 480px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
 
-.qr-code-link a:hover {
-    text-decoration: underline;
+    h1 {
+        font-size: 20px;
+    }
+
+    input[type="text"], button, .upload-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 }
