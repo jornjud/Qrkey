@@ -209,3 +209,25 @@ button:hover, .upload-btn:hover {
         font-size: 16px;
     }
 }
+
+/* สไตล์พื้นฐานของลิงก์ */
+a {
+    color: #4CAF50; /* สีของลิงก์ */
+    text-decoration: none; /* ลบขีดเส้นใต้ของลิงก์ */
+    font-weight: bold; /* ทำให้ข้อความลิงก์หนา */
+}
+
+/* สไตล์เมื่อ hover บนลิงก์ */
+a:hover {
+    text-decoration: underline; /* ขีดเส้นใต้เมื่อผู้ใช้ hover */
+    color: #388E3C; /* เปลี่ยนสีเมื่อ hover */
+}
+
+/* สไตล์สำหรับลิงก์ในข้อความที่ถอดรหัสแล้ว */
+#decodedContent a {
+    color: #2196F3; /* สีของลิงก์ในข้อความที่ถอดรหัส */
+}
+
+#decodedContent a:hover {
+    color: #0D47A1; /* สีเมื่อ hover บนลิงก์ในข้อความที่ถอดรหัส */
+}
