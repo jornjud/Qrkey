@@ -8,7 +8,6 @@ const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณ
                       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' +
                       '!@#$%^&*()_+-=[]{}|;:,./<>?';
 
-
 // ฟังก์ชันสร้าง seed สั้น
 function generateShortSeed() {
     return Math.floor(Math.random() * 1679616).toString(36).padStart(4, '0');
@@ -39,9 +38,9 @@ function encodeThaiEng(text, seed, keyword) {
         if (index !== -1) {
             const shift = Math.floor(prng() * ALLOWED_CHARS.length);
             const newIndex = (index + shift) % ALLOWED_CHARS.length;
-            result += ALLOWED_CHARS[newIndex];
+            result += ALLOWED_CHARS[newIndex]; // เปลี่ยนเป็นตัวอักษรใหม่ตามตำแหน่งที่สลับ
         } else {
-            result += char;
+            result += char; // เก็บตัวอักษรเดิมถ้าไม่พบใน ALLOWED_CHARS
         }
     }
     return result;
@@ -61,9 +60,9 @@ function decodeThaiEng(encodedText, seed, keyword) {
         if (index !== -1) {
             const shift = Math.floor(prng() * ALLOWED_CHARS.length);
             const newIndex = (index - shift + ALLOWED_CHARS.length) % ALLOWED_CHARS.length;
-            result += ALLOWED_CHARS[newIndex];
+            result += ALLOWED_CHARS[newIndex]; // สลับกลับไปที่ตัวอักษรเดิม
         } else {
-            result += char;
+            result += char; // เก็บตัวอักษรเดิมถ้าไม่พบใน ALLOWED_CHARS
         }
     }
     return result;
