@@ -40,14 +40,25 @@
             }
 
             function decodeText() {
-                if (encodedText) {
-                    const keyword = keywordElement.value;
-                    const decodedText = decrypt(decodeURIComponent(encodedText), keyword); // ใช้ฟังก์ชันถอดรหัส
-                    decodedContentElement.innerHTML = `<strong>ข้อความที่ถอดรหัสแล้ว/ข้อความที่ต้องใส่🔑คีย์เวิร์ด:</strong><br>${decodedText}`;
-                } else {
-                    decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
-                }
-            }
+    if (encodedText) {
+        const keyword = keywordElement.value;
+        const decodedText = decrypt(decodeURIComponent(encodedText), keyword); // ใช้ฟังก์ชันถอดรหัส
+        let linkText = decodedText;
+
+        // ตรวจสอบว่าข้อความที่ถอดรหัสเป็นลิงก์หรือไม่
+        const urlPattern = /https?:\/\/[^\s]+/g;  // Regular expression สำหรับลิงก์
+        if (urlPattern.test(decodedText)) {
+            linkText = decodedText.replace(urlPattern, function(url) {
+                return `<a href="${url}" target="_blank">${url}</a>`;  // แปลงลิงก์เป็น anchor tag
+            });
+        }
+
+        decodedContentElement.innerHTML = `<strong>ข้อความที่ถอดรหัสแล้ว/ข้อความที่ต้องใส่🔑คีย์เวิร์ด:</strong><br>${linkText}`;
+    } else {
+        decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
+    }
+}
+
 
             if (decodeButton) {
                 decodeButton.addEventListener('click', decodeText); // ถอดรหัสเมื่อคลิกปุ่ม

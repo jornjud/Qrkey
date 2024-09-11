@@ -122,9 +122,9 @@ function generateQRCode(text, hint) {
             centerImage.style.top = '50%';
             centerImage.style.left = '50%';
             centerImage.style.transform = 'translate(-50%, -50%)';
-            centerImage.style.width = '20%';
-            centerImage.style.height = '20%';
-            centerImage.style.borderRadius = '50%';
+            centerImage.style.width = '30%';
+            centerImage.style.height = '30%';
+            centerImage.style.borderRadius = '5%';
             qrcode.appendChild(centerImage);
         } else if (emoji) {
             // If no image, but emoji is provided
@@ -157,6 +157,16 @@ function handleImageUpload(event) {
             updateTranslation();  // Regenerate QR code with image
         };
         reader.readAsDataURL(file);
+    }
+}
+
+// ฟังก์ชันลบรูปภาพที่อัปโหลด
+function clearUploadedImage() {
+    const uploadedImage = document.getElementById('uploadedImage');
+    if (uploadedImage) {
+        uploadedImage.src = '';  // ลบ src ของรูปภาพ
+        uploadedImage.style.display = 'none';  // ซ่อนรูปภาพ
+        updateTranslation();  // อัปเดต QR Code โดยไม่ใช้รูปภาพ
     }
 }
 
@@ -212,12 +222,15 @@ function copyToClipboard() {
     if (qrcodeLink) {
         const link = qrcodeLink.textContent;
         navigator.clipboard.writeText(link).then(() => {
-            alert('คัดลอกลิงก์แล้ว!');
+            alert('🔗 คัดลอกลิงก์แล้ว!');
         }).catch(err => {
             console.error('ไม่สามารถคัดลอกข้อความ: ', err);
         });
     }
 }
+
+// เพิ่ม event listener สำหรับปุ่ม clear image
+document.getElementById('clearImageButton').addEventListener('click', clearUploadedImage);
 
 // Event listeners สำหรับการใช้งาน
 document.addEventListener('DOMContentLoaded', function() {

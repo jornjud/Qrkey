@@ -187,3 +187,25 @@ button:hover, .upload-btn:hover {
     margin-top: 10px;
     color: var(--primary-color);
 }
+
+#clearImageButton {
+    background-color: #f44336;  /* สีแดงสำหรับปุ่มยกเลิก */
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+#clearImageButton:hover {
+    background-color: #d32f2f;
+}
+
+@media (max-width: 480px) {
+    #clearImageButton {
+        padding: 12px;
+        font-size: 16px;
+    }
+}
