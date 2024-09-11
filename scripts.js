@@ -3,8 +3,11 @@
 
 // ตัวอักษรที่อนุญาตในการเข้ารหัส
 const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ' +
+                      'ะาำิีึืุูเแโใไ' + // เพิ่มสระภาษาไทย
+                      '่้๊๋์' + // เพิ่มวรรณยุกต์ภาษาไทย
                       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' +
                       '!@#$%^&*()_+-=[]{}|;:,./<>?';
+
 
 // ฟังก์ชันสร้าง seed สั้น
 function generateShortSeed() {
