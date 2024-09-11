@@ -189,7 +189,7 @@ button:hover, .upload-btn:hover {
 }
 
 #clearImageButton {
-    background-color: #f44336;  /* สีแดงสำหรับปุ่มยกเลิก */
+    background-color: #f44336; 
     color: white;
     border: none;
     padding: 10px;
@@ -212,22 +212,22 @@ button:hover, .upload-btn:hover {
 
 /* สไตล์พื้นฐานของลิงก์ */
 a {
-    color: #4CAF50; /* สีของลิงก์ */
-    text-decoration: none; /* ลบขีดเส้นใต้ของลิงก์ */
-    font-weight: bold; /* ทำให้ข้อความลิงก์หนา */
+    color: #4CAF50; 
+    text-decoration: none; 
+    font-weight: bold; 
 }
 
 /* สไตล์เมื่อ hover บนลิงก์ */
 a:hover {
-    text-decoration: underline; /* ขีดเส้นใต้เมื่อผู้ใช้ hover */
-    color: #388E3C; /* เปลี่ยนสีเมื่อ hover */
+    text-decoration: underline; 
+    color: #388E3C; 
 }
 
 /* สไตล์สำหรับลิงก์ในข้อความที่ถอดรหัสแล้ว */
 #decodedContent a {
-    color: #2196F3; /* สีของลิงก์ในข้อความที่ถอดรหัส */
+    color: #2196F3; 
 }
 
 #decodedContent a:hover {
-    color: #0D47A1; /* สีเมื่อ hover บนลิงก์ในข้อความที่ถอดรหัส */
+    color: #0D47A1; 
 }

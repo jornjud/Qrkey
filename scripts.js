@@ -1,6 +1,3 @@
-// ต้องใส่ CryptoJS เข้ามาในไฟล์เพื่อใช้งาน
-// <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
-
 // ตัวอักษรที่อนุญาตในการเข้ารหัส
 const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ' +
                       'ะาำิีึืุูเแโใไ' + // เพิ่มสระภาษาไทย
@@ -38,9 +35,9 @@ function encodeThaiEng(text, seed, keyword) {
         if (index !== -1) {
             const shift = Math.floor(prng() * ALLOWED_CHARS.length);
             const newIndex = (index + shift) % ALLOWED_CHARS.length;
-            result += ALLOWED_CHARS[newIndex]; // เปลี่ยนเป็นตัวอักษรใหม่ตามตำแหน่งที่สลับ
+            result += ALLOWED_CHARS[newIndex]; 
         } else {
-            result += char; // เก็บตัวอักษรเดิมถ้าไม่พบใน ALLOWED_CHARS
+            result += char; 
         }
     }
     return result;
@@ -60,9 +57,9 @@ function decodeThaiEng(encodedText, seed, keyword) {
         if (index !== -1) {
             const shift = Math.floor(prng() * ALLOWED_CHARS.length);
             const newIndex = (index - shift + ALLOWED_CHARS.length) % ALLOWED_CHARS.length;
-            result += ALLOWED_CHARS[newIndex]; // สลับกลับไปที่ตัวอักษรเดิม
+            result += ALLOWED_CHARS[newIndex]; 
         } else {
-            result += char; // เก็บตัวอักษรเดิมถ้าไม่พบใน ALLOWED_CHARS
+            result += char; 
         }
     }
     return result;
@@ -87,17 +84,22 @@ function decrypt(encodedText, keyword) {
     return decodeThaiEng(text, seed, keyword);
 }
 
+// สร้าง Web Worker สำหรับการเข้ารหัส
+let encryptionWorker = null;
+if (window.Worker) {
+    encryptionWorker = new Worker('encryption_worker.js'); 
+}
+
 // ฟังก์ชันสร้าง QR code
 function generateQRCode(text, hint) {
     const encodedText = encodeURIComponent(text);
-    const encodedHint = encodeURIComponent(hint || '');  // Encode hint if provided
+    const encodedHint = encodeURIComponent(hint || '');
     const qrCodeText = `https://jornjud.github.io/Qrkey/decoder.html?text=${encodedText}&hint=${encodedHint}`;
     const qrcode = document.getElementById('qrcode');
-    
-    if (qrcode) {
-        qrcode.innerHTML = "";  // Clear existing QR code
 
-        // Create the QR code
+    if (qrcode) {
+        qrcode.innerHTML = "";
+
         new QRCode(qrcode, {
             text: qrCodeText,
             width: 256,
@@ -106,35 +108,32 @@ function generateQRCode(text, hint) {
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
-        
+
         qrcode.style.border = '10px solid #FFA500';
         qrcode.style.display = 'inline-block';
 
-        // Image or Emoji at center
         const uploadedImage = document.getElementById('uploadedImage');
         const emoji = document.getElementById('emojiInput').value;
 
         if (uploadedImage.src && uploadedImage.src !== window.location.href) {
-            // If an image is uploaded, show it at the center
             const centerImage = document.createElement('img');
             centerImage.src = uploadedImage.src;
             centerImage.style.position = 'absolute';
             centerImage.style.top = '50%';
             centerImage.style.left = '50%';
             centerImage.style.transform = 'translate(-50%, -50%)';
-            centerImage.style.width = '30%';
-            centerImage.style.height = '30%';
+            centerImage.style.width = '20%';
+            centerImage.style.height = '20%';
             centerImage.style.borderRadius = '5%';
             qrcode.appendChild(centerImage);
         } else if (emoji) {
-            // If no image, but emoji is provided
             const centerEmoji = document.createElement('div');
             centerEmoji.textContent = emoji;
             centerEmoji.style.position = 'absolute';
             centerEmoji.style.top = '50%';
             centerEmoji.style.left = '50%';
             centerEmoji.style.transform = 'translate(-50%, -50%)';
-            centerEmoji.style.fontSize = '48px';  // Adjust emoji size
+            centerEmoji.style.fontSize = '48px';
             qrcode.appendChild(centerEmoji);
         }
 
@@ -153,8 +152,8 @@ function handleImageUpload(event) {
         reader.onload = function(e) {
             const imgElement = document.getElementById('uploadedImage');
             imgElement.src = e.target.result;
-            imgElement.style.display = 'none';  // Hide actual image but keep data
-            updateTranslation();  // Regenerate QR code with image
+            imgElement.style.display = 'none';
+            updateTranslation();
         };
         reader.readAsDataURL(file);
     }
@@ -164,9 +163,9 @@ function handleImageUpload(event) {
 function clearUploadedImage() {
     const uploadedImage = document.getElementById('uploadedImage');
     if (uploadedImage) {
-        uploadedImage.src = '';  // ลบ src ของรูปภาพ
-        uploadedImage.style.display = 'none';  // ซ่อนรูปภาพ
-        updateTranslation();  // อัปเดต QR Code โดยไม่ใช้รูปภาพ
+        uploadedImage.src = '';
+        uploadedImage.style.display = 'none';
+        updateTranslation();
     }
 }
 
@@ -174,11 +173,26 @@ function clearUploadedImage() {
 function updateTranslation() {
     const sourceText = document.getElementById("sourceText");
     const keyword = document.getElementById("keyword");
-    const hint = document.getElementById("hint");  // New hint input
+    const hint = document.getElementById("hint");
 
     if (sourceText && keyword) {
-        const targetText = encrypt(sourceText.value, keyword.value);
-        generateQRCode(targetText, hint.value);  // Pass the hint value
+        // ใช้ Web Worker สำหรับการเข้ารหัส
+        if (encryptionWorker) {
+            encryptionWorker.postMessage({
+                action: 'encrypt',
+                text: sourceText.value,
+                keyword: keyword.value
+            });
+
+            encryptionWorker.onmessage = function(event) {
+                const targetText = event.data;
+                generateQRCode(targetText, hint.value);
+            };
+        } else {
+            // ถ้า Web Worker ไม่รองรับ ให้เข้ารหัสใน main thread
+            const targetText = encrypt(sourceText.value, keyword.value);
+            generateQRCode(targetText, hint.value);
+        }
     }
 }
 
@@ -241,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const imageUpload = document.getElementById('imageUpload');
     const sourceText = document.getElementById('sourceText');
     const keyword = document.getElementById('keyword');
-    const hint = document.getElementById('hint');  // New hint input
+    const hint = document.getElementById('hint');
 
     if (convertButton) convertButton.addEventListener('click', updateTranslation);
     if (saveButton) saveButton.addEventListener('click', saveQRCode);
@@ -250,5 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (imageUpload) imageUpload.addEventListener('change', handleImageUpload);
     if (sourceText) sourceText.addEventListener('input', updateTranslation);
     if (keyword) keyword.addEventListener('input', updateTranslation);
-    if (hint) hint.addEventListener('input', updateTranslation);  // Update QR on hint input
+    if (hint) hint.addEventListener('input', updateTranslation);
 });
+

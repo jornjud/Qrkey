@@ -1,4 +1,3 @@
-<!-- decoder.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -7,28 +6,28 @@
     <title>🔍 ถอดรหัสปริศนา</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script> <!-- เพิ่ม CryptoJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
 </head>
 <body>
     <div class="container decoder-container">
         <h1>🔍 ถอดรหัสปริศนา</h1>
-        
+
         <input type="text" id="keyword" placeholder="🔑ใส่คีย์เวิร์ด (ถ้ามี)">
         <button id="decodeButton">🔓🔑 ถอดรหัส</button>
-        
-        <div id="hintMessage"></div> <!-- แสดงคำใบ้ -->
+
+        <div id="hintMessage"></div>
         <div id="decodedContent"></div>
         <p>✨ สนุกกับการสร้าง QR-Code ของคุณเอง! 🔐<br> 
-            <a href="https://jornjud.github.io/QrKey2/" target="_blank" style="color:#4CAF50; text-decoration:none;">คลิกที่นี่เพื่อเริ่มสร้าง QR-Code 💡</a>
+            <a href="https://jornjud.github.io/QrKey2/" target="_blank">คลิกที่นี่เพื่อเริ่มสร้าง QR-Code 💡</a>
         </p>
     </div>
 
-    <script src="scripts.js"></script> <!-- โหลดสคริปต์ -->
+    <script src="scripts.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const encodedText = urlParams.get('text');
-            const hint = urlParams.get('hint');  // ดึงคำใบ้จาก URL
+            const hint = urlParams.get('hint');
             const keywordElement = document.getElementById('keyword');
             const decodedContentElement = document.getElementById('decodedContent');
             const decodeButton = document.getElementById('decodeButton');
@@ -40,31 +39,29 @@
             }
 
             function decodeText() {
-    if (encodedText) {
-        const keyword = keywordElement.value;
-        const decodedText = decrypt(decodeURIComponent(encodedText), keyword); // ใช้ฟังก์ชันถอดรหัส
-        let linkText = decodedText;
+                if (encodedText) {
+                    const keyword = keywordElement.value;
+                    const decodedText = decrypt(decodeURIComponent(encodedText), keyword);
+                    let linkText = decodedText;
 
-        // ตรวจสอบว่าข้อความที่ถอดรหัสเป็นลิงก์หรือไม่
-        const urlPattern = /https?:\/\/[^\s]+/g;  // Regular expression สำหรับลิงก์
-        if (urlPattern.test(decodedText)) {
-            linkText = decodedText.replace(urlPattern, function(url) {
-                return `<a href="${url}" target="_blank">${url}</a>`;  // แปลงลิงก์เป็น anchor tag
-            });
-        }
+                    // ตรวจสอบว่าข้อความที่ถอดรหัสเป็นลิงก์หรือไม่
+                    const urlPattern = /https?:\/\/[^\s]+/g;
+                    if (urlPattern.test(decodedText)) {
+                        linkText = decodedText.replace(urlPattern, function(url) {
+                            return `<a href="${url}" target="_blank">${url}</a>`;
+                        });
+                    }
 
-        decodedContentElement.innerHTML = `<strong>ข้อความที่ถอดรหัสแล้ว/ข้อความที่ต้องใส่🔑คีย์เวิร์ด:</strong><br>${linkText}`;
-    } else {
-        decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
-    }
-}
-
-
-            if (decodeButton) {
-                decodeButton.addEventListener('click', decodeText); // ถอดรหัสเมื่อคลิกปุ่ม
+                    decodedContentElement.innerHTML = `<strong>ข้อความที่ถอดรหัสแล้ว/ข้อความที่ต้องใส่🔑คีย์เวิร์ด:</strong><br>${linkText}`;
+                } else {
+                    decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
+                }
             }
 
-            // ถอดรหัสเมื่อกด Enter
+            if (decodeButton) {
+                decodeButton.addEventListener('click', decodeText);
+            }
+
             if (keywordElement) {
                 keywordElement.addEventListener('keypress', function(event) {
                     if (event.key === 'Enter') {
@@ -73,7 +70,6 @@
                 });
             }
 
-            // ถ้ามีข้อความที่เข้ารหัสอยู่แล้วใน URL, ให้ทำการถอดรหัส
             if (encodedText) {
                 decodeText();
             }
