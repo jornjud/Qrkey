@@ -1,24 +1,28 @@
+// ต้องใส่ CryptoJS เข้ามาในไฟล์เพื่อใช้งาน
+// <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+
 // ตัวอักษรที่อนุญาตในการเข้ารหัส
 const ALLOWED_CHARS = 'กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ' +
                       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' +
                       '!@#$%^&*()_+-=[]{}|;:,./<>?';
 
+// ฟังก์ชันสร้าง seed สั้น
 function generateShortSeed() {
     return Math.floor(Math.random() * 1679616).toString(36).padStart(4, '0');
 }
 
+// ฟังก์ชันสร้าง PRNG ที่ใช้ CryptoJS.SHA256
 function createPRNG(seed, keyword) {
     const combined = seed + keyword;
-    let state = 0;
-    for (let i = 0; i < combined.length; i++) {
-        state = ((state << 5) - state + combined.charCodeAt(i)) | 0;
-    }
+    const hash = CryptoJS.SHA256(combined).toString(CryptoJS.enc.Hex);
+    let state = parseInt(hash.substring(0, 8), 16);
     return () => {
         state = (state * 1103515245 + 12345) & 0x7fffffff;
         return state / 0x80000000;
     };
 }
 
+// ฟังก์ชันเข้ารหัสแบบ ThaiEng
 function encodeThaiEng(text, seed, keyword) {
     if (!keyword) {
         return text;
@@ -40,6 +44,7 @@ function encodeThaiEng(text, seed, keyword) {
     return result;
 }
 
+// ฟังก์ชันถอดรหัสแบบ ThaiEng
 function decodeThaiEng(encodedText, seed, keyword) {
     if (!keyword) {
         return encodedText;
@@ -61,6 +66,7 @@ function decodeThaiEng(encodedText, seed, keyword) {
     return result;
 }
 
+// ฟังก์ชันเข้ารหัสหลัก
 function encrypt(text, keyword) {
     if (!keyword) {
         return text;
@@ -69,6 +75,7 @@ function encrypt(text, keyword) {
     return seed + encodeThaiEng(text, seed, keyword);
 }
 
+// ฟังก์ชันถอดรหัสหลัก
 function decrypt(encodedText, keyword) {
     if (!keyword) {
         return encodedText;
@@ -78,6 +85,7 @@ function decrypt(encodedText, keyword) {
     return decodeThaiEng(text, seed, keyword);
 }
 
+// ฟังก์ชันสร้าง QR code
 function generateQRCode(text, hint) {
     const encodedText = encodeURIComponent(text);
     const encodedHint = encodeURIComponent(hint || '');  // Encode hint if provided
@@ -135,6 +143,7 @@ function generateQRCode(text, hint) {
     }
 }
 
+// ฟังก์ชันอัพโหลดรูปภาพ
 function handleImageUpload(event) {
     const file = event.target.files[0];
     if (file) {
@@ -149,6 +158,7 @@ function handleImageUpload(event) {
     }
 }
 
+// ฟังก์ชันอัพเดทการแปล
 function updateTranslation() {
     const sourceText = document.getElementById("sourceText");
     const keyword = document.getElementById("keyword");
@@ -160,6 +170,7 @@ function updateTranslation() {
     }
 }
 
+// ฟังก์ชันบันทึก QR code
 function saveQRCode() {
     const qrcode = document.getElementById('qrcode');
     if (qrcode) {
@@ -172,6 +183,7 @@ function saveQRCode() {
     }
 }
 
+// ฟังก์ชันแชร์ QR code
 function shareQRCode() {
     const qrcode = document.getElementById('qrcode');
     if (qrcode) {
@@ -192,6 +204,7 @@ function shareQRCode() {
     }
 }
 
+// ฟังก์ชันคัดลอกลิงก์ไปยังคลิปบอร์ด
 function copyToClipboard() {
     const qrcodeLink = document.getElementById('qrcode-link');
     if (qrcodeLink) {
@@ -204,6 +217,7 @@ function copyToClipboard() {
     }
 }
 
+// Event listeners สำหรับการใช้งาน
 document.addEventListener('DOMContentLoaded', function() {
     const convertButton = document.getElementById('convertButton');
     const saveButton = document.getElementById('saveButton');
@@ -215,7 +229,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const keyword = document.getElementById('keyword');
     const hint = document.getElementById('hint');  // New hint input
 
-    if (convertButton) convertButton.addEventListener('click', updateTranslation);
+    if (convertButton) convertButton.addEvent
+    if (convertButton) convertButton.addEventListener('click',updateTranslation);
     if (saveButton) saveButton.addEventListener('click', saveQRCode);
     if (shareButton) shareButton.addEventListener('click', shareQRCode);
     if (copyButton) copyButton.addEventListener('click', copyToClipboard);
