@@ -7,34 +7,7 @@
     <title>🔍 ถอดรหัสปริศนา</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .decoder-container {
-            text-align: center;
-            padding: 20px;
-        }
-
-        #decodedContent {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
-            word-break: break-word;
-            max-height: 300px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            text-align: left;
-        }
-
-        #decodeButton {
-            margin-top: 10px;
-        }
-
-        #hintMessage {
-            margin-top: 10px;
-            color: var(--primary-color);
-        }
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script> <!-- เพิ่ม CryptoJS -->
 </head>
 <body>
     <div class="container decoder-container">
@@ -43,23 +16,25 @@
         <input type="text" id="keyword" placeholder="🔑ใส่คีย์เวิร์ด (ถ้ามี)">
         <button id="decodeButton">🔓🔑 ถอดรหัส</button>
         
-        <div id="hintMessage"></div> <!-- Display the hint here -->
+        <div id="hintMessage"></div> <!-- แสดงคำใบ้ -->
         <div id="decodedContent"></div>
         <p>✨ สนุกกับการสร้าง QR-Code ของคุณเอง! 🔐<br> 
-    <a href="https://jornjud.github.io/QrKey2/" target="_blank" style="color:#4CAF50; text-decoration:none;">คลิกที่นี่เพื่อเริ่มสร้าง QR-Code 💡</a></p>
+            <a href="https://jornjud.github.io/QrKey2/" target="_blank" style="color:#4CAF50; text-decoration:none;">คลิกที่นี่เพื่อเริ่มสร้าง QR-Code 💡</a>
+        </p>
     </div>
 
-    <script src="scripts.js"></script>
+    <script src="scripts.js"></script> <!-- โหลดสคริปต์ -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const encodedText = urlParams.get('text');
-            const hint = urlParams.get('hint');  // Get the hint from URL
+            const hint = urlParams.get('hint');  // ดึงคำใบ้จาก URL
             const keywordElement = document.getElementById('keyword');
             const decodedContentElement = document.getElementById('decodedContent');
             const decodeButton = document.getElementById('decodeButton');
             const hintMessage = document.getElementById('hintMessage');
 
+            // แสดงคำใบ้ (ถ้ามี)
             if (hint) {
                 hintMessage.textContent = `💡 คำใบ้: ${decodeURIComponent(hint)}`;
             }
@@ -67,17 +42,18 @@
             function decodeText() {
                 if (encodedText) {
                     const keyword = keywordElement.value;
-                    const decodedText = decrypt(decodeURIComponent(encodedText), keyword);
+                    const decodedText = decrypt(decodeURIComponent(encodedText), keyword); // ใช้ฟังก์ชันถอดรหัส
                     decodedContentElement.innerHTML = `<strong>ข้อความที่ถอดรหัสแล้ว/ข้อความที่ต้องใส่🔑คีย์เวิร์ด:</strong><br>${decodedText}`;
                 } else {
                     decodedContentElement.innerHTML = 'ไม่พบข้อความที่เข้ารหัส';
                 }
             }
-            
+
             if (decodeButton) {
-                decodeButton.addEventListener('click', decodeText);
+                decodeButton.addEventListener('click', decodeText); // ถอดรหัสเมื่อคลิกปุ่ม
             }
-            
+
+            // ถอดรหัสเมื่อกด Enter
             if (keywordElement) {
                 keywordElement.addEventListener('keypress', function(event) {
                     if (event.key === 'Enter') {
@@ -86,6 +62,7 @@
                 });
             }
 
+            // ถ้ามีข้อความที่เข้ารหัสอยู่แล้วใน URL, ให้ทำการถอดรหัส
             if (encodedText) {
                 decodeText();
             }

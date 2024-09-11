@@ -224,13 +224,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const shareButton = document.getElementById('shareButton');
     const copyButton = document.getElementById('copyButton');
     const imageUpload = document.getElementById('imageUpload');
-    const emojiInput = document.getElementById('emojiInput');
     const sourceText = document.getElementById('sourceText');
     const keyword = document.getElementById('keyword');
     const hint = document.getElementById('hint');  // New hint input
 
-    if (convertButton) convertButton.addEvent
-    if (convertButton) convertButton.addEventListener('click',updateTranslation);
+    if (convertButton) convertButton.addEventListener('click', updateTranslation);
     if (saveButton) saveButton.addEventListener('click', saveQRCode);
     if (shareButton) shareButton.addEventListener('click', shareQRCode);
     if (copyButton) copyButton.addEventListener('click', copyToClipboard);

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script> <!-- เพิ่ม CryptoJS -->
 </head>
 <body>
     <div class="container">
@@ -22,9 +23,8 @@
         
         <input type="file" id="imageUpload" accept="image/*">
         <label for="imageUpload" class="upload-btn">อัพโหลดรูปภาพ</label>
-		<input type="text" id="emojiInput" placeholder="ใส่ Emoji (รองรับเฉพาะสมาร์ทโฟน)">
+        <input type="text" id="emojiInput" placeholder="ใส่ Emoji (รองรับเฉพาะสมาร์ทโฟน)">
 
-        
         <div class="qrcode-outer-container">
             <div class="qrcode-inner-container">
                 <div id="qrcode"></div>
@@ -43,6 +43,6 @@
     
     <img id="uploadedImage" style="display:none;">
     
-    <script src="scripts.js"></script>
+    <script src="scripts.js"></script> <!-- โหลดสคริปต์ -->
 </body>
 </html>
